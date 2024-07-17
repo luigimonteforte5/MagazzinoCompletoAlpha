@@ -1,12 +1,11 @@
 package Management;
+
 import Exceptions.CarrelloVuotoException;
 import Exceptions.ProdottoNonTrovatoException;
 import Products.ProdottoElettronicoDTO;
+
 import java.util.*;
 import java.util.stream.Collectors;
-
-
-
 
 public class Carrello {
 

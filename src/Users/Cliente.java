@@ -2,10 +2,15 @@ package Users;
 
 import Exceptions.CarrelloVuotoException;
 import Exceptions.ProdottoNonTrovatoException ;
-import Exceptions.LoginFailedException;
 import Management.Carrello;
 import Products.ProdottoElettronicoDTO;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -19,12 +24,9 @@ public class Cliente extends Utente {
 
     }
 
-    public boolean login(String emailCliente, String passwordCliente) throws LoginFailedException {
-        if(emailCliente.equals(getEmail()) && passwordCliente.equals(getPassword())) {
-            return true;
-        } else {
-            throw new LoginFailedException("UserId o password errati");
-        }
+    public boolean login(String emailCliente, String passwordCliente) {
+
+	    return emailCliente.equals(getEmail()) && passwordCliente.equals(getPassword());
     }
 
     public void aggiungiProdottoAlCarrello( ProdottoElettronicoDTO prodotto) throws ProdottoNonTrovatoException {
@@ -79,5 +81,17 @@ public class Cliente extends Utente {
         return carrelloCliente.getCarrello();
     }
 
-}
+        public static List < Cliente > leggiUtentiDaFile ( ) {
+            try ( FileReader lettore = new FileReader("src/Users/Customers.json") ) {
+                Gson gson = new Gson();
+                Type tipoListaClienti = new TypeToken < List < Cliente > >() {
+                }.getType();
+                return gson.fromJson(lettore, tipoListaClienti);
+            } catch ( IOException e ) {
+                System.err.println(e.getMessage());
+            }
+            return null;
+        }
+    }
+
 

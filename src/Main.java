@@ -6,6 +6,15 @@ import Products.ProdottoElettronico;
 import Products.ProdottoElettronicoDTO;
 import Products.TipoElettronico;
 import Users.Cliente;
+import Users.Utente;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -14,21 +23,15 @@ public class Main {
 
 		//Todo: aggiungere lettura da file
 
-		//Clienti di prova
-		Cliente cliente = new Cliente ( "Pietro", "Smusi", 34, "1", 0, "1");
+
+		List <Cliente> clienti = Cliente.leggiUtentiDaFile();
+
 		ProdottoElettronico prd1 = new ProdottoElettronico("Samsung", "Galaxys24", 700.0, 1300, 0, 2, 6, TipoElettronico.SMARTPHONE);
-		ProdottoElettronico prd2 = new ProdottoElettronico("apple", "Iphone 13", 800.0, 1500, 1, 2, 13, TipoElettronico.SMARTPHONE);
-		ProdottoElettronico prd3 = new ProdottoElettronico("Samsung", "GalaxyTabStronzo", 300.0, 800, 3, 2, 6, TipoElettronico.TABLET);
-		ProdottoElettronico prd4 = new ProdottoElettronico("Apple", "Ipad Pro", 700.0, 1700, 4, 2, 6, TipoElettronico.TABLET);
-		ProdottoElettronico prd5 = new ProdottoElettronico("Apple", "MacBook Air", 900.00, 1700.00, 5, 2, 20, TipoElettronico.LAPTOP);
 		Magazzino magazzino1 = new Magazzino();
 		magazzino1.addProductToMagazzino(prd1);
-		magazzino1.addProductToMagazzino(prd2);
-		magazzino1.addProductToMagazzino(prd3);
-		magazzino1.addProductToMagazzino(prd4);
-		magazzino1.addProductToMagazzino(prd5);
 		Scanner sc = new Scanner(System.in);
 		boolean loggedIn = false;
+		Cliente clienteLoggato = null;
 
 		while ( !loggedIn ) {
 
@@ -37,27 +40,32 @@ public class Main {
 			System.out.println("Inserisci la password");
 			String passRead = sc.nextLine();
 
+	while ( true ) {
+
+		while ( clienteLoggato == null ) {
 			try {
-				loggedIn = cliente.login(userRead, passRead);
-			} catch ( LoginFailedException e ) {
+				assert clienti != null;
+				clienteLoggato = logInCliente(clienti);
+				loggedIn = true;
+			}catch(LoginFailedException e){
 				System.err.println(e.getMessage());
 			}
 		}
 
-		while ( loggedIn ) {
-			mostraMenu();
+		while ( clienteLoggato != null ) {
+			mostraMenu(clienteLoggato);
 			System.out.println("Inserisci la selezione");
 			int selezione = sc.nextInt();
 
 			switch ( selezione ) {
 
-				case 0 -> loggedIn = false;
+				case 0 -> clienteLoggato = null;
 
 				case 1 -> {//Aggiunta tramite id
 					System.out.println("Inserisci l'id del prodotto da aggiungere");
 					try {
-						aggiuntaID(sc.nextInt(), cliente, magazzino1);
-					}catch( ProdottoNonTrovatoException e){
+						aggiuntaID(sc.nextInt(), clienteLoggato, magazzino1);
+					} catch ( ProdottoNonTrovatoException e ) {
 						System.err.println(e.getMessage());
 					}
 				}
@@ -65,30 +73,30 @@ public class Main {
 				case 2 -> {//Rimozione tramite id
 					System.out.println("Inserisci l'id del prodotto da rimuovere");
 					try {
-						rimozioneID(sc.nextInt(), cliente, magazzino1);
-					}catch(ProdottoNonTrovatoException e){
+						rimozioneID(sc.nextInt(), clienteLoggato, magazzino1);
+					} catch ( ProdottoNonTrovatoException e ) {
 						System.err.println(e.getMessage());
 					}
 				}
 
-				case 3 -> cliente.stampaCarrelloProdotti(); //VisualizzaCarrello
+				case 3 -> clienteLoggato.stampaCarrelloProdotti(); //VisualizzaCarrello
 
 				case 4 -> {//CalcoloTotale
 					try {
-						System.out.println(cliente.calcoloTotaleCarrello());
-					}catch(CarrelloVuotoException e){
+						System.out.println(clienteLoggato.calcoloTotaleCarrello());
+					} catch ( CarrelloVuotoException e ) {
 						System.err.println(e.getMessage());
 					}
 				}
 
-				case 5 -> menuRicerca(sc, cliente);//Ricerche
+				case 5 -> menuRicerca(sc, clienteLoggato);//Ricerche
 
-				case 6 -> cliente.svuotaCarrelloProdotti(); /*ToDo: SvuotaCarrello*/
+				case 6 -> clienteLoggato.svuotaCarrelloProdotti(); /*ToDo: SvuotaCarrello*/
 
 				case 7 -> {//ConcludiAcquisto
-					try{
-						cliente.concludiAcquistoProdotti(sc);
-					}catch ( CarrelloVuotoException e ){
+					try {
+						clienteLoggato.concludiAcquistoProdotti(sc);
+					} catch ( CarrelloVuotoException e ) {
 						System.err.println(e.getMessage());
 					}
 				}
@@ -97,10 +105,11 @@ public class Main {
 
 			}
 		}
-		sc.close();
 	}
 
-	private static void mostraMenu ( ) {
+	}
+
+	private static void mostraMenu ( Cliente cliente ) {
 		System.out.println("\n--- Menu Magazzino ---");
 		System.out.println();
 		System.out.println("1. Aggiungi prodotto al carrello");
@@ -112,6 +121,7 @@ public class Main {
 		System.out.println("7. Concludi l'acquisto");
 		System.out.println("0. LogOut");
 		System.out.println();
+		System.out.println("Utente loggato: " + cliente.getNome() + " " + cliente.getCognome());
 	}
 
 	public static void menuRicerca(Scanner sc, Cliente cliente){
@@ -193,6 +203,7 @@ public class Main {
 
 			default -> System.err.println("Comando non riconosciuto");
 		}
+		sc.nextLine();
 	}
 
 	public static void aggiuntaID(int id, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
@@ -227,8 +238,24 @@ public class Main {
 
 	public static void svuotaCarrello(Cliente cliente, Magazzino magazzino){
 		cliente.getCarrello().forEach(p ->
-				magazzino.getMagazzino().stream()
-				);
+				magazzino.getMagazzino().stream());
+	}
+
+	public static Cliente logInCliente(List<Cliente> clienti) throws LoginFailedException {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Inserisci l'id");
+		String userRead = sc.nextLine();
+		System.out.println("Inserisci la password");
+		String passRead = sc.nextLine();
+
+		if( clienti.stream().noneMatch(c -> c.getEmail().equalsIgnoreCase(userRead)) ) throw new LoginFailedException("Utente non presente");
+
+		for( Cliente cliente : clienti ) {
+			if ( cliente.login(userRead, passRead) ) {
+				return cliente;
+			}
+		}
+		throw new LoginFailedException("UserName o Password errati");
 	}
 
 	public static Set<ProdottoElettronicoDTO> ricercaMarca(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {

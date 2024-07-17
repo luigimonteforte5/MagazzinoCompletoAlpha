@@ -1,0 +1,10 @@
+[
+  {
+   "nome":"John", "cognome":"Smusi","age":34, "email": "petrosmusi@acegamer.com",
+    "idUtente": "0", "password": "petro27"
+  },
+  {
+    "nome":"Cavolo", "cognome":"Arrabiato","age":34, "email": "cavolino@acegamer.com",
+    "idUtente": "1", "password": "cavolo"
+  }
+]
