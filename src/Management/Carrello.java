@@ -88,15 +88,14 @@ public class Carrello {
 	}
 
 
-	public void concludiAcquisto() throws CarrelloVuotoException {
+	public void concludiAcquisto(Scanner scan) throws CarrelloVuotoException {
 		if(carrello.isEmpty()) throw new CarrelloVuotoException("Non ci sono articoli nel carrello");
 		System.out.println("Si è sicuro di voler concludere l'acquisto?");
 		stampaCarrello();
 		System.out.println(calcoloTot());
 		System.out.println("Inserire si per continuare o no per annullare");
-		Scanner sc = new Scanner(System.in);
-		String conferma = sc.nextLine();
-		sc.close();
+		scan.nextLine();
+		String conferma = scan.nextLine();
 		if(conferma.equalsIgnoreCase("si") || conferma.equalsIgnoreCase("sì")){
 			System.out.println("Acquisto effettuato, torna a trovarci!");
 			svuotaCarrello();

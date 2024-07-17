@@ -6,6 +6,7 @@ import Exceptions.ProdottoNonTrovatoException;
 import Management.Carrello;
 import Products.ProdottoElettronicoDTO;
 
+import java.util.Scanner;
 import java.util.Set;
 
 public class Cliente extends Utente {
@@ -66,8 +67,8 @@ public class Cliente extends Utente {
         carrelloCliente.svuotaCarrello();
     }
 
-    public void concludiAcquistoProdotti() throws CarrelloVuotoException {
-        carrelloCliente.concludiAcquisto();
+    public void concludiAcquistoProdotti( Scanner sc ) throws CarrelloVuotoException {
+        carrelloCliente.concludiAcquisto(sc);
     }
 
     public Set < ProdottoElettronicoDTO > getCarrello(){

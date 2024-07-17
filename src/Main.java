@@ -13,9 +13,11 @@ import java.util.Set;
 public class Main {
 	public static void main( String[] args ) throws CarrelloVuotoException {
 
+		//Todo: aggiungere lettura da file
+
 		//Clienti di prova
 		Cliente cliente = new Cliente ( "Pietro", "Smusi", 34, "petrosmusi@acegamer.com", 0, "petro27");
-		ProdottoElettronico prd1 = new ProdottoElettronico("Samsung", "Galaxys24", 700.0, 1300, 0, 10, 6, TipoElettronico.SMARTPHONE);
+		ProdottoElettronico prd1 = new ProdottoElettronico("Samsung", "Galaxys24", 700.0, 1300, 0, 2, 6, TipoElettronico.SMARTPHONE);
 		Magazzino magazzino1 = new Magazzino();
 		magazzino1.addProductToMagazzino(prd1);
 		Scanner sc = new Scanner(System.in);
@@ -44,7 +46,7 @@ public class Main {
 
 				case 0 -> loggedIn = false;
 
-				case 1 -> {
+				case 1 -> {//Aggiunta tramite id
 					System.out.println("Inserisci l'id del prodotto da aggiungere");
 					try {
 						aggiuntaID(sc.nextInt(), cliente, magazzino1);
@@ -53,7 +55,7 @@ public class Main {
 					}
 				}
 
-				case 2 -> {
+				case 2 -> {//Rimozione tramite id
 					System.out.println("Inserisci l'id del prodotto da rimuovere");
 					try {
 						rimozioneID(sc.nextInt(), cliente, magazzino1);
@@ -62,9 +64,9 @@ public class Main {
 					}
 				}
 
-				case 3 -> cliente.stampaCarrelloProdotti();
+				case 3 -> cliente.stampaCarrelloProdotti(); //VisualizzaCarrello
 
-				case 4 -> {
+				case 4 -> {//CalcoloTotale
 					try {
 						System.out.println(cliente.calcoloTotaleCarrello());
 					}catch(CarrelloVuotoException e){
@@ -72,13 +74,13 @@ public class Main {
 					}
 				}
 
-				case 5 -> menuRicerca(sc, cliente);
+				case 5 -> menuRicerca(sc, cliente);//Ricerche
 
-				case 6 -> cliente.svuotaCarrelloProdotti();
+				case 6 -> cliente.svuotaCarrelloProdotti(); /*ToDo: SvuotaCarrello*/
 
-				case 7 -> {
+				case 7 -> {//ConcludiAcquisto
 					try{
-						cliente.concludiAcquistoProdotti();
+						cliente.concludiAcquistoProdotti(sc);
 					}catch ( CarrelloVuotoException e ){
 						System.err.println(e.getMessage());
 					}
@@ -88,10 +90,11 @@ public class Main {
 
 			}
 		}
+		sc.close();
 	}
 
 	private static void mostraMenu ( ) {
-		System.out.println("\n--- Menu Management.Magazzino ---");
+		System.out.println("\n--- Menu Magazzino ---");
 		System.out.println();
 		System.out.println("1. Aggiungi prodotto al carrello");
 		System.out.println("2. Rimuovi prodotto dal carrello");
@@ -105,6 +108,8 @@ public class Main {
 	}
 
 	public static void menuRicerca(Scanner sc, Cliente cliente){
+		//ToDo: controllare ricerche
+
 		System.out.println("\n--- Menu Ricerca ---");
 		System.out.println();
 		System.out.println("1. Ricerca per marca");
@@ -162,6 +167,8 @@ public class Main {
 
 	public static void aggiuntaID(int id, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
 
+		//Todo: aggiungere possibilità di inserire quantità prodotti maggiori di 1
+
 		ProdottoElettronico toAdd = magazzino.filteredById(id)
 				.stream()
 				.findFirst()
@@ -180,6 +187,8 @@ public class Main {
 	}
 
 	public static void rimozioneID(int id, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
+
+		//Todo: aggiungere controllo se elemento presente e diminuire quantità
 
 		cliente.rimuoviProdottoTramiteId(id);
 		magazzino.incrementaQuantita(id, 1);
