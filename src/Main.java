@@ -14,7 +14,14 @@ import java.util.Set;
 public class Main {
 	public static void main( String[] args ) throws CarrelloVuotoException {
 
-		//Todo: aggiungere lettura da file
+		//Todo: aggiungere lettura da file(in progress...)
+		//ToDo: Metodo registrazione su file
+		//ToDo: Metodo login magazziniere (B&C)
+		//ToDo: Ricerca nel magazzino
+		//ToDo: Rimozione nel Main (prende roba nel carrello e aggiunge quantita nel magazzino)
+		//ToDo: chiudere programma
+		//ToDo: BuilderPattern Magazzino(B&C)
+
 
 
 		List <Cliente> clienti = Cliente.leggiUtentiDaFile();

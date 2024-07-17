@@ -1,12 +1,10 @@
 package Users;
-
 import Exceptions.CarrelloVuotoException;
-import Exceptions.ProdottoNonTrovatoException ;
+import Exceptions.ProdottoNonTrovatoException;
 import Management.Carrello;
 import Products.ProdottoElettronicoDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -23,7 +21,6 @@ public class Cliente extends Utente {
         this.carrelloCliente = new Carrello();
 
     }
-
     public boolean login(String emailCliente, String passwordCliente) {
 
 	    return emailCliente.equals(getEmail()) && passwordCliente.equals(getPassword());
