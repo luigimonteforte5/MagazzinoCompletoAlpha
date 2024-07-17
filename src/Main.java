@@ -6,7 +6,6 @@ import Products.ProdottoElettronico;
 import Products.ProdottoElettronicoDTO;
 import Products.TipoElettronico;
 import Users.Cliente;
-
 import java.util.Scanner;
 import java.util.Set;
 
@@ -16,10 +15,18 @@ public class Main {
 		//Todo: aggiungere lettura da file
 
 		//Clienti di prova
-		Cliente cliente = new Cliente ( "Pietro", "Smusi", 34, "petrosmusi@acegamer.com", 0, "petro27");
+		Cliente cliente = new Cliente ( "Pietro", "Smusi", 34, "1", 0, "1");
 		ProdottoElettronico prd1 = new ProdottoElettronico("Samsung", "Galaxys24", 700.0, 1300, 0, 2, 6, TipoElettronico.SMARTPHONE);
+		ProdottoElettronico prd2 = new ProdottoElettronico("apple", "Iphone 13", 800.0, 1500, 1, 2, 13, TipoElettronico.SMARTPHONE);
+		ProdottoElettronico prd3 = new ProdottoElettronico("Samsung", "GalaxyTabStronzo", 300.0, 800, 3, 2, 6, TipoElettronico.TABLET);
+		ProdottoElettronico prd4 = new ProdottoElettronico("Apple", "Ipad Pro", 700.0, 1700, 4, 2, 6, TipoElettronico.TABLET);
+		ProdottoElettronico prd5 = new ProdottoElettronico("Apple", "MacBook Air", 900.00, 1700.00, 5, 2, 20, TipoElettronico.LAPTOP);
 		Magazzino magazzino1 = new Magazzino();
 		magazzino1.addProductToMagazzino(prd1);
+		magazzino1.addProductToMagazzino(prd2);
+		magazzino1.addProductToMagazzino(prd3);
+		magazzino1.addProductToMagazzino(prd4);
+		magazzino1.addProductToMagazzino(prd5);
 		Scanner sc = new Scanner(System.in);
 		boolean loggedIn = false;
 
@@ -130,35 +137,58 @@ public class Main {
 
 		switch (  ricercaSel ){
 			case 1 ->
-				{ System.out.println("Inserisci la marca");
-					sc.nextLine();
-					String marca = sc.nextLine();
-					Set < ProdottoElettronicoDTO > found = cliente.ricercaProdottoPerMarca(marca);
+				{  try {
+					Set < ProdottoElettronicoDTO > found = ricercaMarca(cliente,sc);
 					System.out.println("Dispositivi trovati: " + found);
+				} catch (ProdottoNonTrovatoException inf){
+					System.err.println(inf.getMessage());
+				}
+
 				}
 
 			case 2 ->
-			{System.out.println("Inserisci il modello");
-				String modello = sc.nextLine();
-				System.out.println("Dispositivi trovati: " + cliente.ricercaProdottoPerModello(modello));}
-
+			{	try {
+				Set <ProdottoElettronicoDTO> found = ricercaModello(cliente,sc);
+				System.out.println("Dispositivi trovati: " + found);
+			} catch (ProdottoNonTrovatoException inf){
+				System.err.println(inf.getMessage());
+			}
+			}
 			case 3 ->
-			{System.out.println("Inserisci il prezzo minore e poi il prezzo maggiore");
-				double prezzoMin = sc.nextDouble();
-				double prezzoMag = sc.nextDouble();
-				System.out.println("Dispositivi trovati: " + cliente.ricercaProdottoPerRange(prezzoMin, prezzoMag));}
+			{	try{
+					Set<ProdottoElettronicoDTO> found = ricercaPrezzo(cliente, sc);
+					System.out.println("Dispositivi trovati: " + found);
+				} catch (ProdottoNonTrovatoException inf){
+					System.err.println(inf.getMessage());
+				}
+			}
 
 			case 4 ->
-			{System.out.println("Inserisci il tipo di dispositivo da cercare");
-				String tipo = sc.nextLine();
-				System.out.println("Dispositivi trovati: " +  cliente.ricercaProdottoPerTIpo(tipo));}
+			{ 	try{
+				Set<ProdottoElettronicoDTO> found = ricercaRangePrezzo(cliente, sc);
+				System.out.println("Dispositivi trovati: " + found);
+			} catch (ProdottoNonTrovatoException inf){
+				System.err.println(inf.getMessage());
+			}}
 
-/*
-			case 6:
-				System.out.println("Inserisci l'id da ricercare: ");
-				System.out.println("Dispositivo trovato: " + cliente.ricercaProdottoTramiteId(sc.nextInt()));
-				break;
-*/
+			case 5 ->
+			{	try {
+				Set<ProdottoElettronicoDTO> found = ricercaTipo(cliente, sc);
+				System.out.println("Dispositivi trovati: " + found);
+			} catch (ProdottoNonTrovatoException inf){
+				System.err.println(inf.getMessage());
+			}
+			}
+
+			case 6 ->
+			{	try{
+					Set<ProdottoElettronicoDTO> found = ricercaId(cliente, sc);
+					System.out.println("Dispositivi trovati: " + found);
+				} catch (ProdottoNonTrovatoException inf){
+					System.err.println(inf.getMessage());
+				}
+			}
+
 			case 0 -> {}
 
 			default -> System.err.println("Comando non riconosciuto");
@@ -201,4 +231,38 @@ public class Main {
 				);
 	}
 
+	public static Set<ProdottoElettronicoDTO> ricercaMarca(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+		System.out.println("Inserisci la marca");
+		String marca = sc.nextLine();
+		return cliente.ricercaProdottoPerMarca(marca);
+	}
+
+	public static Set<ProdottoElettronicoDTO> ricercaModello(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+		System.out.println("Inserisci il modello");
+		String modello = sc.nextLine();
+		return cliente.ricercaProdottoPerModello(modello);
+	}
+
+	public static Set<ProdottoElettronicoDTO> ricercaPrezzo(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException{
+		System.out.println("Inserisci il prezzo:");
+		double prezzo = sc.nextDouble();
+		return cliente.ricercaProdottoPerPrezzoDiVendita(prezzo);
+	}
+
+	public static Set<ProdottoElettronicoDTO> ricercaRangePrezzo(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+		System.out.println("Inserisci il prezzo minore e poi il prezzo maggiore");
+		double prezzoMin = sc.nextDouble();
+		double prezzoMag = sc.nextDouble();
+		return cliente.ricercaProdottoPerRange(prezzoMin, prezzoMag);
+	}
+	public static Set<ProdottoElettronicoDTO> ricercaTipo(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+		System.out.println("Inserisci il tipo di dispositivo da cercare");
+		String tipo = sc.nextLine();
+		return cliente.ricercaProdottoPerTIpo(tipo);
+	}
+	public static Set<ProdottoElettronicoDTO> ricercaId(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+		System.out.println("Inserisci l'id da ricercare: ");
+		int id = sc.nextInt();
+		return cliente.ricercaTramiteId(id);
+	}
 }

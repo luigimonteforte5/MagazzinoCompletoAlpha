@@ -1,8 +1,8 @@
 package Users;
 
 import Exceptions.CarrelloVuotoException;
+import Exceptions.ProdottoNonTrovatoException ;
 import Exceptions.LoginFailedException;
-import Exceptions.ProdottoNonTrovatoException;
 import Management.Carrello;
 import Products.ProdottoElettronicoDTO;
 
@@ -31,11 +31,11 @@ public class Cliente extends Utente {
         carrelloCliente.aggiungiProdotto(prodotto);
     }
 
-    public Set< ProdottoElettronicoDTO > ricercaProdottoPerMarca( String marca) {
+    public Set< ProdottoElettronicoDTO > ricercaProdottoPerMarca( String marca) throws ProdottoNonTrovatoException  {
         return carrelloCliente.ricercaPerMarca(marca);
     }
 
-    public Set< ProdottoElettronicoDTO > ricercaProdottoPerModello( String modello) {
+    public Set< ProdottoElettronicoDTO > ricercaProdottoPerModello( String modello) throws ProdottoNonTrovatoException  {
         return carrelloCliente.ricercaPerModello(modello);
     }
 
@@ -43,12 +43,16 @@ public class Cliente extends Utente {
         return carrelloCliente.ricercaPerPrezzoVendita(prezzo);
     }
 
-    public Set< ProdottoElettronicoDTO > ricercaProdottoPerRange( double prezzoMin, double prezzoMax){
+    public Set< ProdottoElettronicoDTO > ricercaProdottoPerRange( double prezzoMin, double prezzoMax) throws ProdottoNonTrovatoException {
         return carrelloCliente.ricercaPerRange(prezzoMin, prezzoMax);
     }
 
     public Set< ProdottoElettronicoDTO > ricercaProdottoPerTIpo( String tipo){
         return carrelloCliente.ricercaPerTipo(tipo);
+    }
+
+    public Set<ProdottoElettronicoDTO> ricercaTramiteId(int id) throws ProdottoNonTrovatoException {
+        return carrelloCliente.ricercaPerId(id);
     }
 
     public void stampaCarrelloProdotti(){

@@ -1,11 +1,12 @@
 package Management;
-
 import Exceptions.CarrelloVuotoException;
 import Exceptions.ProdottoNonTrovatoException;
 import Products.ProdottoElettronicoDTO;
-
 import java.util.*;
 import java.util.stream.Collectors;
+
+
+
 
 public class Carrello {
 
@@ -24,22 +25,33 @@ public class Carrello {
 		else carrello.add(prodotto);
 	}
 
-	public Set <ProdottoElettronicoDTO> ricercaPerId (int id){
-		return carrello.stream()
+	public Set <ProdottoElettronicoDTO> ricercaPerId (int id) throws ProdottoNonTrovatoException{
+		Set<ProdottoElettronicoDTO> tmp = carrello.stream()
 				.filter(p -> p.getId() == id)
 				.collect(Collectors.toSet());
+		if(tmp.isEmpty()){
+			throw new ProdottoNonTrovatoException("Nessuna corrispondenza per ID");
+		}
+		return tmp;
 	}
 
-	public Set <ProdottoElettronicoDTO> ricercaPerMarca ( String marca){
-		return carrello.stream()
-				.filter(p -> p.getMarca().equals( marca))
+	public Set <ProdottoElettronicoDTO> ricercaPerMarca ( String marca) throws ProdottoNonTrovatoException{
+		Set<ProdottoElettronicoDTO> tmp = carrello.stream()
+				.filter(p -> p.getMarca().equalsIgnoreCase( marca))
 				.collect(Collectors.toSet());
+		if(tmp.isEmpty()){
+			throw new ProdottoNonTrovatoException("Nessuna corrispondenza per Marca");
+		}
+		return tmp;
 	}
 
-	public Set<ProdottoElettronicoDTO> ricercaPerModello (String modello){
-		return carrello.stream()
-				.filter(p -> Objects.equals(p.getModello(), modello))
-				.collect(Collectors.toSet());
+	public Set<ProdottoElettronicoDTO> ricercaPerModello (String modello) throws ProdottoNonTrovatoException{
+		 Set<ProdottoElettronicoDTO> tmp = carrello.stream()
+				.filter(p -> p.getModello().equalsIgnoreCase(modello)).collect(Collectors.toSet());
+		 if(tmp.isEmpty()){
+			 throw new ProdottoNonTrovatoException("Nessuna corrispondenza per Modello");
+		 }
+		 return tmp;
 	}
 
 	public Set<ProdottoElettronicoDTO> ricercaPerPrezzoVendita (double prezzo){
@@ -49,10 +61,14 @@ public class Carrello {
 	}
 
 
-	public Set<ProdottoElettronicoDTO> ricercaPerRange (double prezzoMin, double prezzoMax){
-		return carrello.stream()
+	public Set<ProdottoElettronicoDTO> ricercaPerRange (double prezzoMin, double prezzoMax) throws ProdottoNonTrovatoException{
+		Set<ProdottoElettronicoDTO> tmp = carrello.stream()
 				.filter(p -> p.getPrezzoVendita() > prezzoMin && p.getPrezzoVendita() < prezzoMax )
 				.collect(Collectors.toSet());
+		if(tmp.isEmpty()){
+			throw new ProdottoNonTrovatoException("Nessuna corrispondenza trovata per range di prezzo");
+		}
+		return tmp;
 	}
 
 	public Set<ProdottoElettronicoDTO> ricercaPerTipo (String tipo){
