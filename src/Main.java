@@ -33,13 +33,6 @@ public class Main {
 		boolean loggedIn = false;
 		Cliente clienteLoggato = null;
 
-		while ( !loggedIn ) {
-
-			System.out.println("Inserisci l'id");
-			String userRead = sc.nextLine();
-			System.out.println("Inserisci la password");
-			String passRead = sc.nextLine();
-
 	while ( true ) {
 
 		while ( clienteLoggato == null ) {
