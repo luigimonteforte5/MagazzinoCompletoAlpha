@@ -26,8 +26,8 @@ public class Cliente extends Utente {
 	    return emailCliente.equals(getEmail()) && passwordCliente.equals(getPassword());
     }
 
-    public void aggiungiProdottoAlCarrello( ProdottoElettronicoUtente prodotto) throws ProdottoNonTrovatoException {
-        carrelloCliente.aggiungiProdotto(prodotto);
+    public void aggiungiProdottoAlCarrello( ProdottoElettronicoUtente prodotto, int quantita) throws ProdottoNonTrovatoException {
+        carrelloCliente.aggiungiProdotto(prodotto,quantita);
     }
 
     public Set< ProdottoElettronicoUtente > ricercaProdottoPerMarca( String marca) throws ProdottoNonTrovatoException  {
@@ -58,8 +58,8 @@ public class Cliente extends Utente {
         carrelloCliente.stampaCarrello();
     }
 
-    public void rimuoviProdottoTramiteId(int id) throws ProdottoNonTrovatoException {
-        carrelloCliente.rimozioneTramiteId(id);
+    public void rimuoviProdottoTramiteId(int id, int quantita) throws ProdottoNonTrovatoException {
+        carrelloCliente.rimozioneTramiteId(id, quantita);
     }
 
     public double calcoloTotaleCarrello() throws CarrelloVuotoException {
