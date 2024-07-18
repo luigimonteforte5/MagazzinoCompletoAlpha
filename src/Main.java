@@ -141,15 +141,24 @@ public class Main {
 		}
 	}
 
-	private static void rimozioneID(Scanner sc, Cliente cliente, Magazzino magazzino) {
-		try {
-			System.out.println("Inserisci l'id del prodotto da rimuovere");
-			int id = sc.nextInt();
-			sc.nextLine();
-			cliente.rimuoviProdottoTramiteId(id);
-			magazzino.incrementaQuantita(id, 1);
-			System.out.println("Prodotto rimosso con successo");
-		} catch (ProdottoNonTrovatoException e) {
+	public static void rimozioneID(Scanner sc, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
+
+		System.out.println("Inserisci l'id del prodotto da rimuovere");
+
+		int id = sc.nextInt();
+		sc.nextLine();
+
+		System.out.println("Inserire la quantità di prodotti da rimuovere");
+
+		int quantita = sc.nextInt();
+		sc.nextLine();
+		try{
+			cliente.rimuoviProdottoTramiteId(id, quantita);
+
+			magazzino.incrementaQuantita(id, quantita);
+
+			System.out.println("Products.Prodotto rimosso con successo");
+		} catch (IllegalArgumentException e) {
 			System.err.println(e.getMessage());
 		}
 	}
