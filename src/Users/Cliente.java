@@ -2,7 +2,7 @@ package Users;
 import Exceptions.CarrelloVuotoException;
 import Exceptions.ProdottoNonTrovatoException;
 import Management.Carrello;
-import Products.ProdottoElettronicoDTO;
+import Products.ProdottoElettronicoUtente;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.FileReader;
@@ -14,43 +14,43 @@ import java.util.Set;
 
 public class Cliente extends Utente {
 
-    private final Carrello carrelloCliente;
+    private final Carrello carrelloCliente = new Carrello();
 
     public Cliente(String nome, String cognome, int age, String email, int idUtente, String password) {
         super(nome, cognome, age, email, idUtente, password);
-        this.carrelloCliente = new Carrello();
 
     }
+
     public boolean login(String emailCliente, String passwordCliente) {
 
 	    return emailCliente.equals(getEmail()) && passwordCliente.equals(getPassword());
     }
 
-    public void aggiungiProdottoAlCarrello( ProdottoElettronicoDTO prodotto) throws ProdottoNonTrovatoException {
+    public void aggiungiProdottoAlCarrello( ProdottoElettronicoUtente prodotto) throws ProdottoNonTrovatoException {
         carrelloCliente.aggiungiProdotto(prodotto);
     }
 
-    public Set< ProdottoElettronicoDTO > ricercaProdottoPerMarca( String marca) throws ProdottoNonTrovatoException  {
+    public Set< ProdottoElettronicoUtente > ricercaProdottoPerMarca( String marca) throws ProdottoNonTrovatoException  {
         return carrelloCliente.ricercaPerMarca(marca);
     }
 
-    public Set< ProdottoElettronicoDTO > ricercaProdottoPerModello( String modello) throws ProdottoNonTrovatoException  {
+    public Set< ProdottoElettronicoUtente > ricercaProdottoPerModello( String modello) throws ProdottoNonTrovatoException  {
         return carrelloCliente.ricercaPerModello(modello);
     }
 
-    public Set< ProdottoElettronicoDTO > ricercaProdottoPerPrezzoDiVendita( double prezzo){
+    public Set< ProdottoElettronicoUtente > ricercaProdottoPerPrezzoDiVendita( double prezzo){
         return carrelloCliente.ricercaPerPrezzoVendita(prezzo);
     }
 
-    public Set< ProdottoElettronicoDTO > ricercaProdottoPerRange( double prezzoMin, double prezzoMax) throws ProdottoNonTrovatoException {
+    public Set< ProdottoElettronicoUtente > ricercaProdottoPerRange( double prezzoMin, double prezzoMax) throws ProdottoNonTrovatoException {
         return carrelloCliente.ricercaPerRange(prezzoMin, prezzoMax);
     }
 
-    public Set< ProdottoElettronicoDTO > ricercaProdottoPerTIpo( String tipo){
+    public Set< ProdottoElettronicoUtente > ricercaProdottoPerTIpo( String tipo){
         return carrelloCliente.ricercaPerTipo(tipo);
     }
 
-    public Set<ProdottoElettronicoDTO> ricercaTramiteId(int id) throws ProdottoNonTrovatoException {
+    public Set< ProdottoElettronicoUtente > ricercaTramiteId( int id) throws ProdottoNonTrovatoException {
         return carrelloCliente.ricercaPerId(id);
     }
 
@@ -74,21 +74,33 @@ public class Cliente extends Utente {
         carrelloCliente.concludiAcquisto(sc);
     }
 
-    public Set < ProdottoElettronicoDTO > getCarrello(){
+    public Set < ProdottoElettronicoUtente > getCarrello(){
         return carrelloCliente.getCarrello();
     }
 
         public static List < Cliente > leggiUtentiDaFile ( ) {
             try ( FileReader lettore = new FileReader("src/Users/Customers.json") ) {
                 Gson gson = new Gson();
-                Type tipoListaClienti = new TypeToken < List < Cliente > >() {
-                }.getType();
+                Type tipoListaClienti = new TypeToken < List < Cliente > >() {}.getType();
                 return gson.fromJson(lettore, tipoListaClienti);
             } catch ( IOException e ) {
                 System.err.println(e.getMessage());
             }
             return null;
         }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "carrelloCliente=" + carrelloCliente +
+                ", nome='" + nome + '\'' +
+                ", cognome='" + cognome + '\'' +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", idUtente=" + idUtente +
+                ", password='" + password + '\'' +
+                '}';
     }
+}
 
 

@@ -3,7 +3,7 @@ import Exceptions.LoginFailedException;
 import Exceptions.ProdottoNonTrovatoException;
 import Management.Magazzino;
 import Products.ProdottoElettronico;
-import Products.ProdottoElettronicoDTO;
+import Products.ProdottoElettronicoUtente;
 import Products.TipoElettronico;
 import Users.Cliente;
 
@@ -29,8 +29,8 @@ public class Main {
 		ProdottoElettronico prd1 = new ProdottoElettronico("Samsung", "Galaxys24", 700.0, 1300, 0, 2, 6, TipoElettronico.SMARTPHONE);
 		Magazzino magazzino1 = new Magazzino();
 		magazzino1.addProductToMagazzino(prd1);
-		Scanner sc = new Scanner(System.in);
 		boolean loggedIn = false;
+		Scanner sc = new Scanner(System.in);
 		Cliente clienteLoggato = null;
 
 	while ( true ) {
@@ -55,9 +55,9 @@ public class Main {
 				case 0 -> clienteLoggato = null;
 
 				case 1 -> {//Aggiunta tramite id
-					System.out.println("Inserisci l'id del prodotto da aggiungere");
+
 					try {
-						aggiuntaID(sc.nextInt(), clienteLoggato, magazzino1);
+						aggiuntaID(sc, clienteLoggato, magazzino1);
 					} catch ( ProdottoNonTrovatoException e ) {
 						System.err.println(e.getMessage());
 					}
@@ -141,7 +141,7 @@ public class Main {
 		switch (  ricercaSel ){
 			case 1 ->
 				{  try {
-					Set < ProdottoElettronicoDTO > found = ricercaMarca(cliente,sc);
+					Set < ProdottoElettronicoUtente > found = ricercaMarca(cliente,sc);
 					System.out.println("Dispositivi trovati: " + found);
 				} catch (ProdottoNonTrovatoException inf){
 					System.err.println(inf.getMessage());
@@ -151,7 +151,7 @@ public class Main {
 
 			case 2 ->
 			{	try {
-				Set <ProdottoElettronicoDTO> found = ricercaModello(cliente,sc);
+				Set < ProdottoElettronicoUtente > found = ricercaModello(cliente,sc);
 				System.out.println("Dispositivi trovati: " + found);
 			} catch (ProdottoNonTrovatoException inf){
 				System.err.println(inf.getMessage());
@@ -159,7 +159,7 @@ public class Main {
 			}
 			case 3 ->
 			{	try{
-					Set<ProdottoElettronicoDTO> found = ricercaPrezzo(cliente, sc);
+					Set< ProdottoElettronicoUtente > found = ricercaPrezzo(cliente, sc);
 					System.out.println("Dispositivi trovati: " + found);
 				} catch (ProdottoNonTrovatoException inf){
 					System.err.println(inf.getMessage());
@@ -168,7 +168,7 @@ public class Main {
 
 			case 4 ->
 			{ 	try{
-				Set<ProdottoElettronicoDTO> found = ricercaRangePrezzo(cliente, sc);
+				Set< ProdottoElettronicoUtente > found = ricercaRangePrezzo(cliente, sc);
 				System.out.println("Dispositivi trovati: " + found);
 			} catch (ProdottoNonTrovatoException inf){
 				System.err.println(inf.getMessage());
@@ -176,7 +176,7 @@ public class Main {
 
 			case 5 ->
 			{	try {
-				Set<ProdottoElettronicoDTO> found = ricercaTipo(cliente, sc);
+				Set< ProdottoElettronicoUtente > found = ricercaTipo(cliente, sc);
 				System.out.println("Dispositivi trovati: " + found);
 			} catch (ProdottoNonTrovatoException inf){
 				System.err.println(inf.getMessage());
@@ -185,7 +185,7 @@ public class Main {
 
 			case 6 ->
 			{	try{
-					Set<ProdottoElettronicoDTO> found = ricercaId(cliente, sc);
+					Set< ProdottoElettronicoUtente > found = ricercaId(cliente, sc);
 					System.out.println("Dispositivi trovati: " + found);
 				} catch (ProdottoNonTrovatoException inf){
 					System.err.println(inf.getMessage());
@@ -199,9 +199,16 @@ public class Main {
 		sc.nextLine();
 	}
 
-	public static void aggiuntaID(int id, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
+	public static void aggiuntaID(Scanner sc, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
 
-		//Todo: aggiungere possibilità di inserire quantità prodotti maggiori di 1
+		//Done: aggiungere possibilità di inserire quantità prodotti maggiori di 1
+
+		System.out.println("Inserisci l'id del prodotto da aggiungere");
+		int id = sc.nextInt();
+		sc.nextLine();
+		System.out.println("Inserisci la quantità di prodotti che desideri aggiungere al carrello");
+		int quantita = sc.nextInt();
+
 
 		ProdottoElettronico toAdd = magazzino.filteredById(id)
 				.stream()
@@ -210,12 +217,14 @@ public class Main {
 
 		int quantitaProdotto = toAdd.getQuantita();
 
-		if(quantitaProdotto == 0) throw new ProdottoNonTrovatoException("Non ci sono sufficienti quantità in magazzino");
+		if(quantitaProdotto == 0 || quantita>quantitaProdotto) throw new ProdottoNonTrovatoException("Non ci sono sufficienti quantità in magazzino");
 
-		ProdottoElettronicoDTO prodottoTmp = toAdd.toDTO();
+		ProdottoElettronicoUtente prodottoTmp = toAdd.toDTO();
 
 		cliente.aggiungiProdottoAlCarrello(prodottoTmp);
+		prodottoTmp.setQuantitaCarrello(quantita);
 		System.out.println("Products.Prodotto aggiunto con successo");
+
 		magazzino.decrementaQuantita(id, 1);
 
 	}
@@ -241,7 +250,7 @@ public class Main {
 		System.out.println("Inserisci la password");
 		String passRead = sc.nextLine();
 
-		if( clienti.stream().noneMatch(c -> c.getEmail().equalsIgnoreCase(userRead)) ) throw new LoginFailedException("Utente non presente");
+		if(clienti.stream().noneMatch(c -> c.getEmail().equalsIgnoreCase(userRead)) ) throw new LoginFailedException("Utente non presente");
 
 		for( Cliente cliente : clienti ) {
 			if ( cliente.login(userRead, passRead) ) {
@@ -251,36 +260,36 @@ public class Main {
 		throw new LoginFailedException("UserName o Password errati");
 	}
 
-	public static Set<ProdottoElettronicoDTO> ricercaMarca(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+	public static Set< ProdottoElettronicoUtente > ricercaMarca( Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
 		System.out.println("Inserisci la marca");
 		String marca = sc.nextLine();
 		return cliente.ricercaProdottoPerMarca(marca);
 	}
 
-	public static Set<ProdottoElettronicoDTO> ricercaModello(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+	public static Set< ProdottoElettronicoUtente > ricercaModello( Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
 		System.out.println("Inserisci il modello");
 		String modello = sc.nextLine();
 		return cliente.ricercaProdottoPerModello(modello);
 	}
 
-	public static Set<ProdottoElettronicoDTO> ricercaPrezzo(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException{
+	public static Set< ProdottoElettronicoUtente > ricercaPrezzo( Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException{
 		System.out.println("Inserisci il prezzo:");
 		double prezzo = sc.nextDouble();
 		return cliente.ricercaProdottoPerPrezzoDiVendita(prezzo);
 	}
 
-	public static Set<ProdottoElettronicoDTO> ricercaRangePrezzo(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+	public static Set< ProdottoElettronicoUtente > ricercaRangePrezzo( Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
 		System.out.println("Inserisci il prezzo minore e poi il prezzo maggiore");
 		double prezzoMin = sc.nextDouble();
 		double prezzoMag = sc.nextDouble();
 		return cliente.ricercaProdottoPerRange(prezzoMin, prezzoMag);
 	}
-	public static Set<ProdottoElettronicoDTO> ricercaTipo(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+	public static Set< ProdottoElettronicoUtente > ricercaTipo( Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
 		System.out.println("Inserisci il tipo di dispositivo da cercare");
 		String tipo = sc.nextLine();
 		return cliente.ricercaProdottoPerTIpo(tipo);
 	}
-	public static Set<ProdottoElettronicoDTO> ricercaId(Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+	public static Set< ProdottoElettronicoUtente > ricercaId( Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
 		System.out.println("Inserisci l'id da ricercare: ");
 		int id = sc.nextInt();
 		return cliente.ricercaTramiteId(id);

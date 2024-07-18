@@ -1,6 +1,6 @@
 package Products;
 
-public class ProdottoElettronicoDTO {
+public class ProdottoElettronicoUtente {
 
 	private String marca;
 	private String modello;
@@ -12,7 +12,7 @@ public class ProdottoElettronicoDTO {
 	private float dimSchermo;
 	private int quantitaCarrello;
 
-	public ProdottoElettronicoDTO( String marca, String modello, String descrizione, double prezzoVendita, int id, TipoElettronico tipoElettronico, float dimSchermo ) {
+	public ProdottoElettronicoUtente( String marca, String modello, String descrizione, double prezzoVendita, int id, TipoElettronico tipoElettronico, float dimSchermo ) {
 		this.marca = marca;
 		this.modello = modello;
 		this.descrizione = descrizione;
@@ -23,7 +23,7 @@ public class ProdottoElettronicoDTO {
 		quantitaCarrello = 1;
 	}
 
-	public ProdottoElettronicoDTO( String marca, String modello, double prezzoVendita, int id, TipoElettronico tipoElettronico, float dimSchermo ) {
+	public ProdottoElettronicoUtente( String marca, String modello, double prezzoVendita, int id, TipoElettronico tipoElettronico, float dimSchermo ) {
 		this.marca = marca;
 		this.modello = modello;
 		this.prezzoVendita = prezzoVendita;

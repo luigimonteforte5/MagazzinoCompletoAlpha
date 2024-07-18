@@ -46,7 +46,7 @@ public class ProdottoElettronico extends Prodotto {
 
     }
 
-    public ProdottoElettronicoDTO toDTO(){
-        return new ProdottoElettronicoDTO(marca, modello, descrizione, prezzoVendita, id, tipoElettronico, dimSchermo);
+    public ProdottoElettronicoUtente toDTO(){
+        return new ProdottoElettronicoUtente(marca, modello, descrizione, prezzoVendita, id, tipoElettronico, dimSchermo);
     }
 }

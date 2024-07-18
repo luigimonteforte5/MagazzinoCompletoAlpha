@@ -2,21 +2,22 @@ package Management;
 
 import Exceptions.CarrelloVuotoException;
 import Exceptions.ProdottoNonTrovatoException;
-import Products.ProdottoElettronicoDTO;
+import Products.ProdottoElettronicoUtente;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Carrello {
 
-	HashSet < ProdottoElettronicoDTO > carrello;
+	HashSet < ProdottoElettronicoUtente > carrello;
 
 	public Carrello(){
 		carrello = new HashSet <>();
 	}
 
-	public void aggiungiProdotto ( ProdottoElettronicoDTO prodotto) throws ProdottoNonTrovatoException {
-		Optional <ProdottoElettronicoDTO> toAdd = carrello.stream()
+	public void aggiungiProdotto ( ProdottoElettronicoUtente prodotto) throws ProdottoNonTrovatoException {
+
+		Optional < ProdottoElettronicoUtente > toAdd = carrello.stream()
 				.filter(p -> p.getId() == prodotto.getId())
 				.findFirst();
 
@@ -24,8 +25,8 @@ public class Carrello {
 		else carrello.add(prodotto);
 	}
 
-	public Set <ProdottoElettronicoDTO> ricercaPerId (int id) throws ProdottoNonTrovatoException{
-		Set<ProdottoElettronicoDTO> tmp = carrello.stream()
+	public Set < ProdottoElettronicoUtente > ricercaPerId ( int id) throws ProdottoNonTrovatoException{
+		Set< ProdottoElettronicoUtente > tmp = carrello.stream()
 				.filter(p -> p.getId() == id)
 				.collect(Collectors.toSet());
 		if(tmp.isEmpty()){
@@ -34,8 +35,8 @@ public class Carrello {
 		return tmp;
 	}
 
-	public Set <ProdottoElettronicoDTO> ricercaPerMarca ( String marca) throws ProdottoNonTrovatoException{
-		Set<ProdottoElettronicoDTO> tmp = carrello.stream()
+	public Set < ProdottoElettronicoUtente > ricercaPerMarca ( String marca) throws ProdottoNonTrovatoException{
+		Set< ProdottoElettronicoUtente > tmp = carrello.stream()
 				.filter(p -> p.getMarca().equalsIgnoreCase( marca))
 				.collect(Collectors.toSet());
 		if(tmp.isEmpty()){
@@ -44,8 +45,8 @@ public class Carrello {
 		return tmp;
 	}
 
-	public Set<ProdottoElettronicoDTO> ricercaPerModello (String modello) throws ProdottoNonTrovatoException{
-		 Set<ProdottoElettronicoDTO> tmp = carrello.stream()
+	public Set< ProdottoElettronicoUtente > ricercaPerModello ( String modello) throws ProdottoNonTrovatoException{
+		 Set< ProdottoElettronicoUtente > tmp = carrello.stream()
 				.filter(p -> p.getModello().equalsIgnoreCase(modello)).collect(Collectors.toSet());
 		 if(tmp.isEmpty()){
 			 throw new ProdottoNonTrovatoException("Nessuna corrispondenza per Modello");
@@ -53,15 +54,15 @@ public class Carrello {
 		 return tmp;
 	}
 
-	public Set<ProdottoElettronicoDTO> ricercaPerPrezzoVendita (double prezzo){
+	public Set< ProdottoElettronicoUtente > ricercaPerPrezzoVendita ( double prezzo){
 		return carrello.stream()
 				.filter(p -> p.getPrezzoVendita() == prezzo)
 				.collect(Collectors.toSet());
 	}
 
 
-	public Set<ProdottoElettronicoDTO> ricercaPerRange (double prezzoMin, double prezzoMax) throws ProdottoNonTrovatoException{
-		Set<ProdottoElettronicoDTO> tmp = carrello.stream()
+	public Set< ProdottoElettronicoUtente > ricercaPerRange ( double prezzoMin, double prezzoMax) throws ProdottoNonTrovatoException{
+		Set< ProdottoElettronicoUtente > tmp = carrello.stream()
 				.filter(p -> p.getPrezzoVendita() > prezzoMin && p.getPrezzoVendita() < prezzoMax )
 				.collect(Collectors.toSet());
 		if(tmp.isEmpty()){
@@ -70,7 +71,7 @@ public class Carrello {
 		return tmp;
 	}
 
-	public Set<ProdottoElettronicoDTO> ricercaPerTipo (String tipo){
+	public Set< ProdottoElettronicoUtente > ricercaPerTipo ( String tipo){
 		return carrello.stream()
 				.filter(p -> p.getTipoElettronico().name().equals(tipo))
 				.collect(Collectors.toSet());
@@ -91,7 +92,7 @@ public class Carrello {
 
 		if ( carrello.isEmpty()) throw new CarrelloVuotoException("Non ci sono articoli nel carrello");
 
-		for( ProdottoElettronicoDTO dispositivo : carrello){
+		for( ProdottoElettronicoUtente dispositivo : carrello){
 			prezzoTot += dispositivo.getPrezzoVendita() * dispositivo.getQuantitaCarrello();
 		}
 		return prezzoTot;
@@ -119,13 +120,13 @@ public class Carrello {
 		}else System.err.println("Comando non riconosciuto");
 	}
 
-	public Set < ProdottoElettronicoDTO > getCarrello() {
+	public Set < ProdottoElettronicoUtente > getCarrello() {
 		return carrello;
 	}
 
 	public void incrementaQuantita(int id, int amount) throws ProdottoNonTrovatoException {
 
-		ProdottoElettronicoDTO prodotto = ricercaPerId(id)
+		ProdottoElettronicoUtente prodotto = ricercaPerId(id)
 				.stream()
 				.findFirst()
 				.orElseThrow(() -> new ProdottoNonTrovatoException("Products.Prodotto non presente nel magazzino"));
