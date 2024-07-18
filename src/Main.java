@@ -113,32 +113,34 @@ public class Main {
 		return clienteLoggato;
 	}
 
-	private static void aggiuntaID(Scanner sc, Cliente cliente, Magazzino magazzino) {
-		try {
-			System.out.println("Inserisci l'id del prodotto da aggiungere");
-			int id = sc.nextInt();
-			System.out.println("Inserisci la quantità di prodotti che desideri aggiungere al carrello");
-			int quantita = sc.nextInt();
-			sc.nextLine();
+	public static void aggiuntaID(Scanner sc, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
 
-			ProdottoElettronico toAdd = magazzino.filteredById(id)
-					.stream()
-					.findFirst()
-					.orElseThrow(() -> new ProdottoNonTrovatoException("Prodotto non presente nel magazzino"));
+		//Done: aggiungere possibilità di inserire quantità prodotti maggiori di 1
 
-			if (toAdd.getQuantita() == 0 || quantita > toAdd.getQuantita()) {
-				throw new ProdottoNonTrovatoException("Non ci sono sufficienti quantità in magazzino");
-			}
+		System.out.println("Inserisci l'id del prodotto da aggiungere");
+		int id = sc.nextInt();
+		sc.nextLine();
+		System.out.println("Inserisci la quantità di prodotti che desideri aggiungere al carrello");
+		int quantita = sc.nextInt();
 
-			ProdottoElettronicoUtente prodottoTmp = toAdd.toDTO();
-			cliente.aggiungiProdottoAlCarrello(prodottoTmp);
-			prodottoTmp.setQuantitaCarrello(quantita);
-			System.out.println("Prodotto aggiunto con successo");
-			magazzino.decrementaQuantita(id, quantita);
 
-		} catch (ProdottoNonTrovatoException e) {
-			System.err.println(e.getMessage());
-		}
+		ProdottoElettronico toAdd = magazzino.filteredById(id)
+				.stream()
+				.findFirst()
+				.orElseThrow(() -> new ProdottoNonTrovatoException("Products.Prodotto non presente nel magazzino"));
+
+		int quantitaProdotto = toAdd.getQuantita();
+
+		if(quantitaProdotto == 0 || quantita>quantitaProdotto) throw new ProdottoNonTrovatoException("Non ci sono sufficienti quantità in magazzino");
+
+		ProdottoElettronicoUtente prodottoTmp = toAdd.toDTO();
+
+		cliente.aggiungiProdottoAlCarrello(prodottoTmp, quantita);
+		prodottoTmp.setQuantitaCarrello(quantita);
+		System.out.println("Products.Prodotto aggiunto con successo");
+
+		magazzino.decrementaQuantita(id, quantita);
+
 	}
 
 	public static void rimozioneID(Scanner sc, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
