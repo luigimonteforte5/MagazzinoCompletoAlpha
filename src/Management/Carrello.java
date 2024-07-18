@@ -15,13 +15,13 @@ public class Carrello {
 		carrello = new HashSet <>();
 	}
 
-	public void aggiungiProdotto ( ProdottoElettronicoUtente prodotto) throws ProdottoNonTrovatoException {
+	public void aggiungiProdotto ( ProdottoElettronicoUtente prodotto, int quantita) throws ProdottoNonTrovatoException {
 
 		Optional < ProdottoElettronicoUtente > toAdd = carrello.stream()
 				.filter(p -> p.getId() == prodotto.getId())
 				.findFirst();
 
-		if (toAdd.isPresent()) incrementaQuantita(prodotto.getId(), 1);
+		if (toAdd.isPresent()) incrementaQuantita(prodotto.getId(), quantita);
 		else carrello.add(prodotto);
 	}
 
@@ -82,9 +82,13 @@ public class Carrello {
 	}
 
 
-	public void rimozioneTramiteId(int id) throws ProdottoNonTrovatoException {
-		boolean removed = carrello.removeIf(p -> p.getId() == id);
-		if(!removed) throw new ProdottoNonTrovatoException("Products.Prodotto non presente nel carrello");
+	public void rimozioneTramiteId(int id, int quantita) throws ProdottoNonTrovatoException {
+		 ProdottoElettronicoUtente prdToRemove = carrello.stream()
+				 .filter(p->p.getId() == id)
+				 .findFirst()
+				 .orElseThrow(()-> new  ProdottoNonTrovatoException("Prodotto non presente nel carrello"));
+		 decrementaQuantita(id,quantita);
+
 	}
 
 	public double calcoloTot() throws CarrelloVuotoException {
@@ -129,13 +133,22 @@ public class Carrello {
 		ProdottoElettronicoUtente prodotto = ricercaPerId(id)
 				.stream()
 				.findFirst()
-				.orElseThrow(() -> new ProdottoNonTrovatoException("Products.Prodotto non presente nel magazzino"));
+				.orElseThrow(() -> new ProdottoNonTrovatoException("Prodotto non presente nel carrello"));
 
 		int nuovaQuantita = prodotto.getQuantitaCarrello() + amount;
-		if (nuovaQuantita < 0) {
-			throw new IllegalArgumentException("Quantità non può essere negativa");
-		}
 
 		prodotto.setQuantitaCarrello(nuovaQuantita);
+	}
+
+	public void decrementaQuantita (int id, int amount) throws ProdottoNonTrovatoException{
+		ProdottoElettronicoUtente prodotto = ricercaPerId(id)
+				.stream()
+				.findFirst()
+				.orElseThrow(()-> new ProdottoNonTrovatoException("Prodotto non presente nel carrello"));
+		int quantita = prodotto.getQuantitaCarrello() - amount;
+		if(quantita < 0){
+			throw new IllegalArgumentException("Quantità non può essere negativa");
+		}
+		prodotto.setQuantitaCarrello(quantita);
 	}
 }

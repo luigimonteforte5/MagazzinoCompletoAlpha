@@ -14,11 +14,10 @@ import java.util.Set;
 public class Main {
 	public static void main( String[] args ) throws CarrelloVuotoException {
 
-		//Todo: aggiungere lettura da file(in progress...)
+		//ToDo: aggiungere lettura da file(in progress...)
 		//ToDo: Metodo registrazione su file
 		//ToDo: Metodo login magazziniere (B&C)
 		//ToDo: Ricerca nel magazzino
-		//ToDo: Rimozione nel Main (prende roba nel carrello e aggiunge quantita nel magazzino)
 		//ToDo: chiudere programma
 		//ToDo: BuilderPattern Magazzino(B&C)
 
@@ -64,9 +63,8 @@ public class Main {
 				}
 
 				case 2 -> {//Rimozione tramite id
-					System.out.println("Inserisci l'id del prodotto da rimuovere");
 					try {
-						rimozioneID(sc.nextInt(), clienteLoggato, magazzino1);
+						rimozioneID(sc, clienteLoggato, magazzino1);
 					} catch ( ProdottoNonTrovatoException e ) {
 						System.err.println(e.getMessage());
 					}
@@ -221,21 +219,34 @@ public class Main {
 
 		ProdottoElettronicoUtente prodottoTmp = toAdd.toDTO();
 
-		cliente.aggiungiProdottoAlCarrello(prodottoTmp);
+		cliente.aggiungiProdottoAlCarrello(prodottoTmp, quantita);
 		prodottoTmp.setQuantitaCarrello(quantita);
 		System.out.println("Products.Prodotto aggiunto con successo");
 
-		magazzino.decrementaQuantita(id, 1);
+		magazzino.decrementaQuantita(id, quantita);
 
 	}
 
-	public static void rimozioneID(int id, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
+	public static void rimozioneID(Scanner sc, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
 
-		//Todo: aggiungere controllo se elemento presente e diminuire quantità
+		System.out.println("Inserisci l'id del prodotto da rimuovere");
 
-		cliente.rimuoviProdottoTramiteId(id);
-		magazzino.incrementaQuantita(id, 1);
+		int id = sc.nextInt();
+		sc.nextLine();
+
+		System.out.println("Inserire la quantità di prodotti da rimuovere");
+
+		int quantita = sc.nextInt();
+		sc.nextLine();
+	try{
+		cliente.rimuoviProdottoTramiteId(id, quantita);
+
+		magazzino.incrementaQuantita(id, quantita);
+
 		System.out.println("Products.Prodotto rimosso con successo");
+	} catch (IllegalArgumentException e) {
+		System.err.println(e.getMessage());
+		}
 	}
 
 	public static void svuotaCarrello(Cliente cliente, Magazzino magazzino){
