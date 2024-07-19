@@ -25,14 +25,17 @@ public class Carrello {
 		else carrello.add(prodotto);
 	}
 
-	public Set < ProdottoElettronicoUtente > ricercaPerId ( int id) throws ProdottoNonTrovatoException{
-		Set< ProdottoElettronicoUtente > tmp = carrello.stream()
+	public void rimozioneTramiteId(int id, int quantita) throws ProdottoNonTrovatoException {
+		ProdottoElettronicoUtente prdToRemove = ricercaPerId(id);
+		decrementaQuantita(id,quantita);
+		if(ricercaPerId(id).getQuantitaCarrello() <= 0) carrello.remove(prdToRemove);
+
+	}
+
+	public ProdottoElettronicoUtente ricercaPerId ( int id) throws ProdottoNonTrovatoException{
+		return carrello.stream()
 				.filter(p -> p.getId() == id)
-				.collect(Collectors.toSet());
-		if(tmp.isEmpty()){
-			throw new ProdottoNonTrovatoException("Nessuna corrispondenza per ID");
-		}
-		return tmp;
+				.findFirst().orElseThrow(() -> new ProdottoNonTrovatoException("Nessuna corrispondenza"));
 	}
 
 	public Set < ProdottoElettronicoUtente > ricercaPerMarca ( String marca) throws ProdottoNonTrovatoException{
@@ -54,10 +57,13 @@ public class Carrello {
 		 return tmp;
 	}
 
-	public Set< ProdottoElettronicoUtente > ricercaPerPrezzoVendita ( double prezzo){
-		return carrello.stream()
+	public Set< ProdottoElettronicoUtente > ricercaPerPrezzoVendita ( double prezzo ) throws ProdottoNonTrovatoException {
+		Set<ProdottoElettronicoUtente> res = carrello.stream()
 				.filter(p -> p.getPrezzoVendita() == prezzo)
 				.collect(Collectors.toSet());
+
+		if(res.isEmpty()) throw new ProdottoNonTrovatoException("Nessuna corrispondenza");
+		return res;
 	}
 
 
@@ -71,24 +77,21 @@ public class Carrello {
 		return tmp;
 	}
 
-	public Set< ProdottoElettronicoUtente > ricercaPerTipo ( String tipo){
-		return carrello.stream()
+	public Set< ProdottoElettronicoUtente > ricercaPerTipo ( String tipo) throws ProdottoNonTrovatoException {
+		Set <ProdottoElettronicoUtente> res = carrello.stream()
 				.filter(p -> p.getTipoElettronico().name().equals(tipo))
 				.collect(Collectors.toSet());
+
+		if(res.isEmpty()) throw new ProdottoNonTrovatoException("Nessuna corrispondenza");
+		return res;
 	}
 
 	public void stampaCarrello (){
-		System.out.println("Articoli nel carrello: " + carrello);
-	}
-
-
-	public void rimozioneTramiteId(int id, int quantita) throws ProdottoNonTrovatoException {
-		 ProdottoElettronicoUtente prdToRemove = carrello.stream()
-				 .filter(p->p.getId() == id)
-				 .findFirst()
-				 .orElseThrow(()-> new  ProdottoNonTrovatoException("Prodotto non presente nel carrello"));
-		 decrementaQuantita(id,quantita);
-
+		if(carrello.isEmpty()){
+			System.out.println("Non ci sono articoli nel carrello");
+		}else {
+			System.out.println("Articoli nel carrello: " + carrello);
+		}
 	}
 
 	public double calcoloTot() throws CarrelloVuotoException {
@@ -130,25 +133,15 @@ public class Carrello {
 
 	public void incrementaQuantita(int id, int amount) throws ProdottoNonTrovatoException {
 
-		ProdottoElettronicoUtente prodotto = ricercaPerId(id)
-				.stream()
-				.findFirst()
-				.orElseThrow(() -> new ProdottoNonTrovatoException("Prodotto non presente nel carrello"));
-
+		ProdottoElettronicoUtente prodotto = ricercaPerId(id);
 		int nuovaQuantita = prodotto.getQuantitaCarrello() + amount;
-
 		prodotto.setQuantitaCarrello(nuovaQuantita);
 	}
 
 	public void decrementaQuantita (int id, int amount) throws ProdottoNonTrovatoException{
-		ProdottoElettronicoUtente prodotto = ricercaPerId(id)
-				.stream()
-				.findFirst()
-				.orElseThrow(()-> new ProdottoNonTrovatoException("Prodotto non presente nel carrello"));
+		ProdottoElettronicoUtente prodotto = ricercaPerId(id);
 		int quantita = prodotto.getQuantitaCarrello() - amount;
-		if(quantita < 0){
-			throw new IllegalArgumentException("Quantità non può essere negativa");
-		}
+
 		prodotto.setQuantitaCarrello(quantita);
 	}
 }

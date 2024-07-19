@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 public class Magazzino {
 
     //Accetta tipi Products.ProdottoElettronico
@@ -70,8 +69,8 @@ public class Magazzino {
        }
     }
 
-    public Set<ProdottoElettronico> filteredById(int id) {
-         return magazzino.stream().filter(d-> d.getId() == id).collect(Collectors.toSet());
+    public ProdottoElettronico filteredById(int id) throws ProdottoNonTrovatoException {
+         return magazzino.stream().filter(d-> d.getId() == id).findFirst().orElseThrow(() -> new ProdottoNonTrovatoException("Nessuna corrispondenza nel magazzino"));
     }
 
     public Set<ProdottoElettronico> getMagazzino() {
@@ -84,10 +83,7 @@ public class Magazzino {
 
     public void decrementaQuantita(int id, int amount) throws ProdottoNonTrovatoException {
 
-        ProdottoElettronico prodotto = filteredById(id)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new ProdottoNonTrovatoException("Products.Prodotto non presente nel magazzino"));
+        ProdottoElettronico prodotto = filteredById(id);
 
         int nuovaQuantita = prodotto.getQuantita() - amount;
         if (nuovaQuantita < 0) {
@@ -99,10 +95,7 @@ public class Magazzino {
 
     public void incrementaQuantita(int id, int amount) throws ProdottoNonTrovatoException {
 
-        ProdottoElettronico prodotto = filteredById(id)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new ProdottoNonTrovatoException("Products.Prodotto non presente nel magazzino"));
+        ProdottoElettronico prodotto = filteredById(id);
 
         int nuovaQuantita = prodotto.getQuantita() + amount;
         if (nuovaQuantita < 0) {

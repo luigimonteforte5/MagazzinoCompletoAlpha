@@ -5,16 +5,16 @@ public abstract class Utente {
     protected String cognome;
     protected int age;
     protected String email;
-    protected int idUtente;
+    protected int idUtente = 0;
     protected String password;
 
 
-    public Utente(String nome, String cognome, int age, String email, int idUtente, String password) {
+    public Utente(String nome, String cognome, int age, String email, String password) {
         this.nome = nome;
         this.cognome = cognome;
         this.age = age;
         this.email = email;
-        this.idUtente = idUtente;
+        this.idUtente = idUtente++;
         this.password = password;
     }
 

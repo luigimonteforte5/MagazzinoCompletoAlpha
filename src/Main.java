@@ -12,7 +12,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Main {
-	public static void main( String[] args ) throws CarrelloVuotoException {
+	public static void main( String[] args ) {
 
 		//ToDo: aggiungere lettura da file(in progress...)
 		//ToDo: Metodo registrazione su file
@@ -22,36 +22,37 @@ public class Main {
 		//ToDo: BuilderPattern Magazzino(B&C)
 
 
-
+		//Carica i clienti nella lista leggendoli dal file Json
 		List <Cliente> clienti = Cliente.leggiUtentiDaFile();
 
-		ProdottoElettronico prd1 = new ProdottoElettronico("Samsung", "Galaxys24", 700.0, 1300, 0, 2, 6, TipoElettronico.SMARTPHONE);
-		Magazzino magazzino1 = new Magazzino();
-		magazzino1.addProductToMagazzino(prd1);
+		//Crea un prodottoElettronico di esempio
+		ProdottoElettronico prd1 = new ProdottoElettronico("Samsung", "Galaxys24", 700.0, 1300, 0, 10, 6, TipoElettronico.SMARTPHONE);
+		Magazzino magazzino1 = new Magazzino();//Inizializza il magazzino
+		magazzino1.addProductToMagazzino(prd1);//aggiunge il prodotto al magazzino
 		boolean loggedIn = false;
-		Scanner sc = new Scanner(System.in);
+		Scanner sc = new Scanner(System.in);//Inizializza lo Scanner
 		Cliente clienteLoggato = null;
 
 	while ( true ) {
-
+		//Controlla che ci sia un cliente loggato
 		while ( clienteLoggato == null ) {
 			try {
 				assert clienti != null;
-				clienteLoggato = logInCliente(clienti);
+				clienteLoggato = logInCliente(clienti); //Invoca il metodo di login dalla classe cliente
 				loggedIn = true;
-			}catch(LoginFailedException e){
+			}catch(LoginFailedException e){ //Nel caso i dati inseriti siano sbagliati, raccoglie l'eccezione lanciata
 				System.err.println(e.getMessage());
 			}
 		}
 
 		while ( clienteLoggato != null ) {
-			mostraMenu(clienteLoggato);
+			mostraMenu(clienteLoggato);//Stampa il menu di scelta operazione
 			System.out.println("Inserisci la selezione");
 			int selezione = sc.nextInt();
 
 			switch ( selezione ) {
 
-				case 0 -> clienteLoggato = null;
+				case 0 -> clienteLoggato = null;//todo
 
 				case 1 -> {//Aggiunta tramite id
 
@@ -134,72 +135,71 @@ public class Main {
 	public static void sceltaRicerca(Scanner sc, Cliente cliente){
 
 		System.out.println("Selezione il tipo di ricerca da effetuare");
-		int ricercaSel = sc.nextInt();
+		int ricercaSel = sc.nextInt(); //Legge la ricerca da effettuare
 
 		switch (  ricercaSel ){
 			case 1 ->
-				{  try {
+				{  try {//Ricerca per marca
 					Set < ProdottoElettronicoUtente > found = ricercaMarca(cliente,sc);
 					System.out.println("Dispositivi trovati: " + found);
-				} catch (ProdottoNonTrovatoException inf){
-					System.err.println(inf.getMessage());
+				} catch (ProdottoNonTrovatoException e){
+					System.err.println(e.getMessage());
 				}
 
 				}
 
 			case 2 ->
-			{	try {
+			{	try {//Ricerca per modello
 				Set < ProdottoElettronicoUtente > found = ricercaModello(cliente,sc);
 				System.out.println("Dispositivi trovati: " + found);
-			} catch (ProdottoNonTrovatoException inf){
-				System.err.println(inf.getMessage());
+			} catch (ProdottoNonTrovatoException e){
+				System.err.println(e.getMessage());
 			}
 			}
 			case 3 ->
-			{	try{
+			{	try{//Ricerca per prezzo di vendita
 					Set< ProdottoElettronicoUtente > found = ricercaPrezzo(cliente, sc);
 					System.out.println("Dispositivi trovati: " + found);
-				} catch (ProdottoNonTrovatoException inf){
-					System.err.println(inf.getMessage());
+				} catch (ProdottoNonTrovatoException e){
+					System.err.println(e.getMessage());
 				}
 			}
 
 			case 4 ->
-			{ 	try{
+			{ 	try{//Ricerca per range di prezzo
 				Set< ProdottoElettronicoUtente > found = ricercaRangePrezzo(cliente, sc);
 				System.out.println("Dispositivi trovati: " + found);
-			} catch (ProdottoNonTrovatoException inf){
-				System.err.println(inf.getMessage());
+			} catch (ProdottoNonTrovatoException e){
+				System.err.println(e.getMessage());
 			}}
 
 			case 5 ->
-			{	try {
+			{	try {//Ricerca per tipo elettronico
 				Set< ProdottoElettronicoUtente > found = ricercaTipo(cliente, sc);
 				System.out.println("Dispositivi trovati: " + found);
-			} catch (ProdottoNonTrovatoException inf){
-				System.err.println(inf.getMessage());
+			} catch (ProdottoNonTrovatoException e){
+				System.err.println(e.getMessage());
 			}
 			}
 
 			case 6 ->
-			{	try{
-					Set< ProdottoElettronicoUtente > found = ricercaId(cliente, sc);
+			{	try{//Ricerca tramite ID
+					ProdottoElettronicoUtente found = ricercaId(cliente, sc);
 					System.out.println("Dispositivi trovati: " + found);
-				} catch (ProdottoNonTrovatoException inf){
-					System.err.println(inf.getMessage());
+				} catch (ProdottoNonTrovatoException e){
+					System.err.println(e.getMessage());
 				}
 			}
 
-			case 0 -> {}
+			case 0 -> {}//Torna al menu precedente
 
 			default -> System.err.println("Comando non riconosciuto");
 		}
 		sc.nextLine();
 	}
 
+	//aggiunge prodotti al carrello e ne rimuove la quantità dal magazzino
 	public static void aggiuntaID(Scanner sc, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
-
-		//Done: aggiungere possibilità di inserire quantità prodotti maggiori di 1
 
 		System.out.println("Inserisci l'id del prodotto da aggiungere");
 		int id = sc.nextInt();
@@ -207,26 +207,24 @@ public class Main {
 		System.out.println("Inserisci la quantità di prodotti che desideri aggiungere al carrello");
 		int quantita = sc.nextInt();
 
-
-		ProdottoElettronico toAdd = magazzino.filteredById(id)
-				.stream()
-				.findFirst()
-				.orElseThrow(() -> new ProdottoNonTrovatoException("Products.Prodotto non presente nel magazzino"));
+		ProdottoElettronico toAdd = magazzino.filteredById(id);  //trova il prodotto elettronico da aggiungere in base all'id
 
 		int quantitaProdotto = toAdd.getQuantita();
 
-		if(quantitaProdotto == 0 || quantita>quantitaProdotto) throw new ProdottoNonTrovatoException("Non ci sono sufficienti quantità in magazzino");
+		if(quantitaProdotto == 0 || quantita>quantitaProdotto) throw new ProdottoNonTrovatoException("Non ci sono sufficienti quantità in magazzino"); //Nel caso non ci siano abbastanza prodotti in magazzino, lancia eccezione
 
-		ProdottoElettronicoUtente prodottoTmp = toAdd.toDTO();
+		//todo cambiare nome metodo
+		ProdottoElettronicoUtente prodottoTmp = toAdd.toDTO(); //tasforma l'oggetto da prodotto a prodotto utente
 
 		cliente.aggiungiProdottoAlCarrello(prodottoTmp, quantita);
 		prodottoTmp.setQuantitaCarrello(quantita);
-		System.out.println("Products.Prodotto aggiunto con successo");
+		System.out.println("Prodotto aggiunto con successo");
 
-		magazzino.decrementaQuantita(id, quantita);
+		magazzino.decrementaQuantita(id, quantita); //Rimuovi dal magazzino i prodotti aggiunti al carrello
 
 	}
 
+	//rimuove il prodotto dal carrello e lo riaggiunge al magazzino
 	public static void rimozioneID(Scanner sc, Cliente cliente, Magazzino magazzino) throws ProdottoNonTrovatoException {
 
 		System.out.println("Inserisci l'id del prodotto da rimuovere");
@@ -238,37 +236,35 @@ public class Main {
 
 		int quantita = sc.nextInt();
 		sc.nextLine();
-	try{
-		cliente.rimuoviProdottoTramiteId(id, quantita);
 
+		cliente.rimuoviProdottoTramiteId(id, quantita);
 		magazzino.incrementaQuantita(id, quantita);
 
-		System.out.println("Products.Prodotto rimosso con successo");
-	} catch (IllegalArgumentException e) {
-		System.err.println(e.getMessage());
-		}
+		System.out.println("Prodotto rimosso con successo");
+
 	}
 
+	//todo
 	public static void svuotaCarrello(Cliente cliente, Magazzino magazzino){
 		cliente.getCarrello().forEach(p ->
 				magazzino.getMagazzino().stream());
 	}
 
+	//Legge i dati inseriti da input, controlla che l'utente sia registrato e che i dat inseriti siano validi
 	public static Cliente logInCliente(List<Cliente> clienti) throws LoginFailedException {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Inserisci l'id");
 		String userRead = sc.nextLine();
+		if(clienti.stream().noneMatch(c -> c.getEmail().equalsIgnoreCase(userRead)) ) throw new LoginFailedException("Utente non registrato");//Se il cliente non è registrato, lancia un'eccezione
+
 		System.out.println("Inserisci la password");
 		String passRead = sc.nextLine();
 
-		if(clienti.stream().noneMatch(c -> c.getEmail().equalsIgnoreCase(userRead)) ) throw new LoginFailedException("Utente non presente");
-
-		for( Cliente cliente : clienti ) {
-			if ( cliente.login(userRead, passRead) ) {
-				return cliente;
-			}
-		}
-		throw new LoginFailedException("UserName o Password errati");
+		return clienti.stream()
+				.filter(c ->c.login(userRead, passRead))
+				.findFirst()
+				.orElseThrow(() -> new LoginFailedException("UserName o Password errati"));
+		//Richiama il metodo login e controlla se i dati inseriti sono corretti, in caso non lo siano lancia eccezione
 	}
 
 	public static Set< ProdottoElettronicoUtente > ricercaMarca( Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
@@ -300,9 +296,28 @@ public class Main {
 		String tipo = sc.nextLine();
 		return cliente.ricercaProdottoPerTIpo(tipo);
 	}
-	public static Set< ProdottoElettronicoUtente > ricercaId( Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
+	public static ProdottoElettronicoUtente ricercaId( Cliente cliente, Scanner sc) throws ProdottoNonTrovatoException {
 		System.out.println("Inserisci l'id da ricercare: ");
 		int id = sc.nextInt();
 		return cliente.ricercaTramiteId(id);
+	}
+
+	public void registrazione() {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Inserisci il nome");
+		String nome = sc.nextLine();
+		System.out.println("Inserisci il cognome");
+		String cognome = sc.nextLine();
+		System.out.println("Inserisci l'età");
+		int age = sc.nextInt();
+		sc.nextLine();
+		System.out.println("Inserisci la mail");
+		String email = sc.nextLine();
+		System.out.println("Inserisci la password");
+		String password = sc.nextLine();
+
+		Cliente tmp = new Cliente(nome, cognome, age, email, password);
+
+		Cliente.aggiungiUtenteAFile(tmp);
 	}
 }
