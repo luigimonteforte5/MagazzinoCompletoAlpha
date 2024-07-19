@@ -250,7 +250,7 @@ public class Main {
 	//Legge i dati inseriti da input, controlla che l'utente sia registrato e che i dat inseriti siano validi
 	public static Cliente logInCliente(List<Cliente> clienti) throws LoginFailedException {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Inserisci l'id");
+		System.out.println("Inserisci e-mail:");
 		String userRead = sc.nextLine();
 		if(clienti.stream().noneMatch(c -> c.getEmail().equalsIgnoreCase(userRead)) ) throw new LoginFailedException("Utente non registrato");//Se il cliente non è registrato, lancia un'eccezione
 
@@ -320,8 +320,8 @@ public class Main {
 
 	public static void menuAccesso(){
 		Scanner sc = new Scanner(System.in);
+		System.out.println("\n--- Login ---");
 		System.out.println("Scegli come vuoi accedere");
-		System.out.println("\n--- Menu Ricerca ---");
 		System.out.println();
 		System.out.println("1. Registrazione cliente");
 		System.out.println("2. Login cliente");
