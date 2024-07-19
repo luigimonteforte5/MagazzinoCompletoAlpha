@@ -29,9 +29,11 @@ public class Main {
 
 		//Crea un prodottoElettronico di esempio
 		ProdottoElettronico prd1 = new ProdottoElettronico("Samsung", "Galaxys24", 700.0, 1300, 0, 10, 6, TipoElettronico.SMARTPHONE);
+
 		Magazzino magazzino1 = new Magazzino();//Inizializza il magazzino
+
 		magazzino1.addProductToMagazzino(prd1);//aggiunge il prodotto al magazzino
-		boolean loggedIn = false;
+		//boolean loggedIn = false;
 		Scanner sc = new Scanner(System.in);//Inizializza lo Scanner
 
 
@@ -206,12 +208,12 @@ public class Main {
 
 		ProdottoElettronico toAdd = magazzino.filteredById(id);  //trova il prodotto elettronico da aggiungere in base all'id
 
-		int quantitaProdotto = toAdd.getQuantita();
+		int quantitaProdotto = toAdd.getQuantitaMagazzino();
 
 		if(quantitaProdotto == 0 || quantita>quantitaProdotto) throw new ProdottoNonTrovatoException("Non ci sono sufficienti quantità in magazzino"); //Nel caso non ci siano abbastanza prodotti in magazzino, lancia eccezione
 
 		//todo cambiare nome metodo
-		ProdottoElettronicoUtente prodottoTmp = toAdd.toDTO(); //tasforma l'oggetto da prodotto a prodotto utente
+		ProdottoElettronicoUtente prodottoTmp = toAdd.toProdottoUtente(); //tasforma l'oggetto da prodotto a prodotto utente
 
 		cliente.aggiungiProdottoAlCarrello(prodottoTmp, quantita);
 		prodottoTmp.setQuantitaCarrello(quantita);
@@ -332,6 +334,7 @@ public class Main {
 	public static void sceltaAccesso(Scanner sc){
 		List <Cliente> clienti = Cliente.leggiUtentiDaFile();
 		int scelta = sc.nextInt();
+
 		switch (scelta) {
 			case 1 -> registrazione();
 			case 2 -> {

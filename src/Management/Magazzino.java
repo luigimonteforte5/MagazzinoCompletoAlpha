@@ -56,7 +56,7 @@ public class Magazzino {
     public void addProductToMagazzino(ProdottoElettronico dispositivo){
         boolean found = magazzino.stream().anyMatch(d->d.getId() == dispositivo.getId());
         if(found){
-            dispositivo.setQuantita(dispositivo.getQuantita() + 1);
+            dispositivo.setQuantitaMagazzino(dispositivo.getQuantitaMagazzino() + 1);
         } else{
             magazzino.add(dispositivo);
         }
@@ -85,24 +85,24 @@ public class Magazzino {
 
         ProdottoElettronico prodotto = filteredById(id);
 
-        int nuovaQuantita = prodotto.getQuantita() - amount;
+        int nuovaQuantita = prodotto.getQuantitaMagazzino() - amount;
         if (nuovaQuantita < 0) {
             throw new IllegalArgumentException("Quantità non può essere negativa");
         }
 
-        prodotto.setQuantita(nuovaQuantita);
+        prodotto.setQuantitaMagazzino(nuovaQuantita);
     }
 
     public void incrementaQuantita(int id, int amount) throws ProdottoNonTrovatoException {
 
         ProdottoElettronico prodotto = filteredById(id);
 
-        int nuovaQuantita = prodotto.getQuantita() + amount;
+        int nuovaQuantita = prodotto.getQuantitaMagazzino() + amount;
         if (nuovaQuantita < 0) {
             throw new IllegalArgumentException("Quantità non può essere negativa");
         }
 
-        prodotto.setQuantita(nuovaQuantita);
+        prodotto.setQuantitaMagazzino(nuovaQuantita);
     }
 
 }

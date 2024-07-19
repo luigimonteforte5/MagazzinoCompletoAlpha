@@ -14,7 +14,7 @@ public abstract class Utente {
         this.cognome = cognome;
         this.age = age;
         this.email = email;
-        this.idUtente = idUtente++;
+        this.idUtente++;
         this.password = password;
     }
 
