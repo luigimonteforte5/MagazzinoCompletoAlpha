@@ -12,10 +12,12 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Main {
+
+	private static Cliente clienteLoggato = null;
+
 	public static void main( String[] args ) {
 
 		//ToDo: aggiungere lettura da file(in progress...)
-		//ToDo: Metodo registrazione su file
 		//ToDo: Metodo login magazziniere (B&C)
 		//ToDo: Ricerca nel magazzino
 		//ToDo: chiudere programma
@@ -23,7 +25,7 @@ public class Main {
 
 
 		//Carica i clienti nella lista leggendoli dal file Json
-		List <Cliente> clienti = Cliente.leggiUtentiDaFile();
+
 
 		//Crea un prodottoElettronico di esempio
 		ProdottoElettronico prd1 = new ProdottoElettronico("Samsung", "Galaxys24", 700.0, 1300, 0, 10, 6, TipoElettronico.SMARTPHONE);
@@ -31,63 +33,58 @@ public class Main {
 		magazzino1.addProductToMagazzino(prd1);//aggiunge il prodotto al magazzino
 		boolean loggedIn = false;
 		Scanner sc = new Scanner(System.in);//Inizializza lo Scanner
-		Cliente clienteLoggato = null;
 
-	while ( true ) {
-		//Controlla che ci sia un cliente loggato
-		while ( clienteLoggato == null ) {
-			try {
-				assert clienti != null;
-				clienteLoggato = logInCliente(clienti); //Invoca il metodo di login dalla classe cliente
-				loggedIn = true;
-			}catch(LoginFailedException e){ //Nel caso i dati inseriti siano sbagliati, raccoglie l'eccezione lanciata
-				System.err.println(e.getMessage());
+
+		while ( true ) {
+			//Controlla che ci sia un cliente loggato
+			while ( clienteLoggato == null ) {
+				menuAccesso();
 			}
-		}
 
-		while ( clienteLoggato != null ) {
-			mostraMenu(clienteLoggato);//Stampa il menu di scelta operazione
-			System.out.println("Inserisci la selezione");
-			int selezione = sc.nextInt();
 
-			switch ( selezione ) {
+			while ( clienteLoggato != null ) {
+				mostraMenu(clienteLoggato);//Stampa il menu di scelta operazione
+				System.out.println("Inserisci la selezione");
+				int selezione = sc.nextInt();
 
-				case 0 -> clienteLoggato = null;//todo
+				switch ( selezione ) {
 
-				case 1 -> {//Aggiunta tramite id
+					case 0 -> clienteLoggato = null;//todo
 
-					try {
-						aggiuntaID(sc, clienteLoggato, magazzino1);
-					} catch ( ProdottoNonTrovatoException e ) {
-						System.err.println(e.getMessage());
+					case 1 -> {//Aggiunta tramite id
+
+						try {
+							aggiuntaID(sc, clienteLoggato, magazzino1);
+						} catch ( ProdottoNonTrovatoException e ) {
+							System.err.println(e.getMessage());
+						}
 					}
-				}
 
-				case 2 -> {//Rimozione tramite id
-					try {
-						rimozioneID(sc, clienteLoggato, magazzino1);
-					} catch ( ProdottoNonTrovatoException e ) {
-						System.err.println(e.getMessage());
+					case 2 -> {//Rimozione tramite id
+						try {
+							rimozioneID(sc, clienteLoggato, magazzino1);
+						} catch ( ProdottoNonTrovatoException e ) {
+							System.err.println(e.getMessage());
+						}
 					}
-				}
 
-				case 3 -> clienteLoggato.stampaCarrelloProdotti(); //VisualizzaCarrello
+					case 3 -> clienteLoggato.stampaCarrelloProdotti(); //VisualizzaCarrello
 
-				case 4 -> {//CalcoloTotale
-					try {
-						System.out.println(clienteLoggato.calcoloTotaleCarrello());
-					} catch ( CarrelloVuotoException e ) {
-						System.err.println(e.getMessage());
+					case 4 -> {//CalcoloTotale
+						try {
+							System.out.println(clienteLoggato.calcoloTotaleCarrello());
+						} catch ( CarrelloVuotoException e ) {
+							System.err.println(e.getMessage());
+						}
 					}
-				}
 
-				case 5 -> menuRicerca(sc, clienteLoggato);//Ricerche
+					case 5 -> menuRicerca(sc, clienteLoggato);//Ricerche
 
-				case 6 -> clienteLoggato.svuotaCarrelloProdotti(); /*ToDo: SvuotaCarrello*/
+					case 6 -> clienteLoggato.svuotaCarrelloProdotti(); /*ToDo: SvuotaCarrello*/
 
-				case 7 -> {//ConcludiAcquisto
-					try {
-						clienteLoggato.concludiAcquistoProdotti(sc);
+					case 7 -> {//ConcludiAcquisto
+						try {
+							clienteLoggato.concludiAcquistoProdotti(sc);
 					} catch ( CarrelloVuotoException e ) {
 						System.err.println(e.getMessage());
 					}
@@ -302,7 +299,7 @@ public class Main {
 		return cliente.ricercaTramiteId(id);
 	}
 
-	public void registrazione() {
+	public static void registrazione() {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Inserisci il nome");
 		String nome = sc.nextLine();
@@ -319,5 +316,33 @@ public class Main {
 		Cliente tmp = new Cliente(nome, cognome, age, email, password);
 
 		Cliente.aggiungiUtenteAFile(tmp);
+	}
+
+	public static void menuAccesso(){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Scegli come vuoi accedere");
+		System.out.println("\n--- Menu Ricerca ---");
+		System.out.println();
+		System.out.println("1. Registrazione cliente");
+		System.out.println("2. Login cliente");
+		System.out.println("3. Login magazziniere");
+		sceltaAccesso(sc);
+	}
+
+	public static void sceltaAccesso(Scanner sc){
+		List <Cliente> clienti = Cliente.leggiUtentiDaFile();
+		int scelta = sc.nextInt();
+		switch (scelta) {
+			case 1 -> registrazione();
+			case 2 -> {
+				try {
+					clienteLoggato = logInCliente(clienti);
+				}catch(LoginFailedException e){
+					System.err.println(e.getMessage());
+				}
+			}
+			case 3 -> {}
+			default -> System.err.println("Comando non riconosciuto");
+		}
 	}
 }

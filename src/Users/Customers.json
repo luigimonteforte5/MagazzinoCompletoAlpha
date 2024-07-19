@@ -1,25 +1,33 @@
 [
-  {
-   "nome":"John",
+  {"carrelloCliente":{
+  "carrello":[]
+  },
+  "nome":"John",
     "cognome":"Smusi",
     "age":34,
-    "email": "petrosmusi@acegamer.com",
-    "idUtente": "0",
-    "password": "petro27",
-    "carrelloCliente": {
-    "carrello" : []
-  }
+    "email":"petrosmusi@acegamer.com",
+    "idUtente":0,
+    "password":"petro27"
   },
-
   {
+    "carrelloCliente": {
+      "carrello":[]
+    },
     "nome":"Cavolo",
     "cognome":"Arrabiato",
     "age":34,
-    "email": "cavolino@acegamer.com",
-    "idUtente": "1",
-    "password": "cavolo",
-    "carrelloCliente": {
-      "carrello" : []
-    }
+    "email":"cavolino@acegamer.com",
+    "idUtente":1,
+    "password":"cavolo"
+  },
+  {"carrelloCliente":{
+    "carrello":[]
+  },
+    "nome":"Riccardo",
+    "cognome":"Fogli",
+    "age":30,
+    "email":"prova@gmail.com",
+    "idUtente":0,
+    "password":"prova"
   }
 ]
