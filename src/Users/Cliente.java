@@ -16,10 +16,12 @@ import java.util.Set;
 
 public class Cliente extends Utente {
 
+    private final Roles role;
     private final Carrello carrelloCliente;
 
     public Cliente(String nome, String cognome, int age, String email, String password) {
         super(nome, cognome, age, email, password);
+        role = Roles.CLIENTE;
         carrelloCliente = new Carrello();
     }
 

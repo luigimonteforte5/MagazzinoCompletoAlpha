@@ -4,7 +4,6 @@ import Exceptions.ProdottoNonTrovatoException;
 import Management.Magazzino;
 import Products.ProdottoElettronico;
 import Products.ProdottoElettronicoUtente;
-import Products.TipoElettronico;
 import Users.Cliente;
 
 import java.util.List;
@@ -22,14 +21,15 @@ public class Main {
 		//ToDo: Ricerca nel magazzino
 		//ToDo: chiudere programma
 		//ToDo: BuilderPattern Magazzino(B&C)
+		//Todo: Metodo per chiudere il programma
+		//ToDo: cancellazione utente
 
 
 		//Carica i clienti nella lista leggendoli dal file Json
 
 
 		//Crea un prodottoElettronico di esempio
-		ProdottoElettronico prd1 = new ProdottoElettronico("Samsung", "Galaxys24", 700.0, 1300, 0, 10, 6, TipoElettronico.SMARTPHONE);
-
+		ProdottoElettronico prd1 = new ProdottoElettronico.ProductBuilder("Samsung", "Galaxy S24", 850.0, 1300.0, 0, "Smartphone", 6).build();
 		Magazzino magazzino1 = new Magazzino();//Inizializza il magazzino
 
 		magazzino1.addProductToMagazzino(prd1);//aggiunge il prodotto al magazzino
@@ -93,7 +93,6 @@ public class Main {
 				}
 
 				default -> System.err.println("Comando non riconosciuto");
-
 			}
 		}
 	}
@@ -144,7 +143,6 @@ public class Main {
 				} catch (ProdottoNonTrovatoException e){
 					System.err.println(e.getMessage());
 				}
-
 				}
 
 			case 2 ->
@@ -327,7 +325,7 @@ public class Main {
 		System.out.println();
 		System.out.println("1. Registrazione cliente");
 		System.out.println("2. Login cliente");
-		System.out.println("3. Login magazziniere");
+		//System.out.println("3. Login magazziniere");
 		sceltaAccesso(sc);
 	}
 

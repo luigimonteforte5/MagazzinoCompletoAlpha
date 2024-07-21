@@ -7,6 +7,7 @@ public abstract class Utente {
     protected String email;
     protected int idUtente = 0;
     protected String password;
+    protected Roles role;
 
 
     public Utente(String nome, String cognome, int age, String email, String password) {
@@ -67,6 +68,9 @@ public abstract class Utente {
         this.password = password;
     }
 
+    public Roles getRole (){
+        return role;
+    }
 
 
 }
