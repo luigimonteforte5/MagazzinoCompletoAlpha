@@ -5,24 +5,29 @@ import Management.Magazzino;
 import Products.ProdottoElettronico;
 import Products.ProdottoElettronicoUtente;
 import Users.Cliente;
+import Users.Magazziniere;
+import Users.Roles;
+import Users.Utente;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
 public class Main {
 
-	private static Cliente clienteLoggato = null;
+	private static Utente utenteLoggato = null;
+	private static Roles tipoUtente = null;
 
 	public static void main( String[] args ) {
 
-		//ToDo: aggiungere lettura da file(in progress...)
-		//ToDo: Metodo login magazziniere (B&C)
-		//ToDo: Ricerca nel magazzino
-		//ToDo: chiudere programma
-		//ToDo: BuilderPattern Magazzino(B&C)
+		//ToDo: Aggiungere lettura da file(in progress... magazziniere)
+		//ToDo: Metodo login magazziniere (C)
+		//ToDo: Ricerca nel magazzino da implementare in cliente
 		//Todo: Metodo per chiudere il programma
-		//ToDo: cancellazione utente
+
+		//ToDo: Cancellazione utente
+		//ToDo: integrare il DB(sostituire Gson/json)
 
 
 		//Carica i clienti nella lista leggendoli dal file Json
@@ -36,22 +41,28 @@ public class Main {
 		//boolean loggedIn = false;
 		Scanner sc = new Scanner(System.in);//Inizializza lo Scanner
 
-
+		Cliente clienteLoggato = null;
 		while ( true ) {
 			//Controlla che ci sia un cliente loggato
-			while ( clienteLoggato == null ) {
+			while ( utenteLoggato == null ) {
 				menuAccesso();
+				if(tipoUtente.equals(Roles.CLIENTE)){
+					clienteLoggato = (Cliente)(utenteLoggato);
+				}
 			}
 
 
 			while ( clienteLoggato != null ) {
-				mostraMenu(clienteLoggato);//Stampa il menu di scelta operazione
+				mostraMenuCliente(clienteLoggato);//Stampa il menu di scelta operazione
 				System.out.println("Inserisci la selezione");
 				int selezione = sc.nextInt();
 
 				switch ( selezione ) {
 
-					case 0 -> clienteLoggato = null;//todo
+					case 0 -> {
+						clienteLoggato = null;
+						utenteLoggato = null;
+					}	//todo
 
 					case 1 -> {//Aggiunta tramite id
 
@@ -99,7 +110,7 @@ public class Main {
 
 	}
 
-	private static void mostraMenu ( Cliente cliente ) {
+	private static void mostraMenuCliente( Cliente cliente ) {
 		System.out.println("\n--- Menu Magazzino ---");
 		System.out.println();
 		System.out.println("1. Aggiungi prodotto al carrello");
@@ -248,19 +259,24 @@ public class Main {
 	}
 
 	//Legge i dati inseriti da input, controlla che l'utente sia registrato e che i dat inseriti siano validi
-	public static Cliente logInCliente(List<Cliente> clienti) throws LoginFailedException {
+	public static Utente logIn(List<Utente> utenti) throws LoginFailedException {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Inserisci e-mail:");
 		String userRead = sc.nextLine();
-		if(clienti.stream().noneMatch(c -> c.getEmail().equalsIgnoreCase(userRead)) ) throw new LoginFailedException("Utente non registrato");//Se il cliente non è registrato, lancia un'eccezione
+		if(utenti.stream().noneMatch(c -> c.getEmail().equalsIgnoreCase(userRead)) ) throw new LoginFailedException("Utente non registrato");//Se il cliente non è registrato, lancia un'eccezione
 
 		System.out.println("Inserisci la password");
 		String passRead = sc.nextLine();
 
-		return clienti.stream()
+				Utente utenteLoggato = utenti.stream()
 				.filter(c ->c.login(userRead, passRead))
 				.findFirst()
 				.orElseThrow(() -> new LoginFailedException("UserName o Password errati"));
+
+				if(utenteLoggato instanceof Cliente) tipoUtente = Roles.CLIENTE;
+				if(utenteLoggato instanceof Magazziniere) tipoUtente = Roles.MAGAZZINIERE;
+
+				return utenteLoggato;
 		//Richiama il metodo login e controlla se i dati inseriti sono corretti, in caso non lo siano lancia eccezione
 	}
 
@@ -315,8 +331,12 @@ public class Main {
 
 		Cliente tmp = new Cliente(nome, cognome, age, email, password);
 
-		Cliente.aggiungiUtenteAFile(tmp);
-	}
+        try {
+            Cliente.aggiungiClienteAlFile(tmp);
+        } catch (IOException e) {
+			System.err.println("Impossibile accedere al file");;
+        }
+    }
 
 	public static void menuAccesso(){
 		Scanner sc = new Scanner(System.in);
@@ -330,14 +350,14 @@ public class Main {
 	}
 
 	public static void sceltaAccesso(Scanner sc){
-		List <Cliente> clienti = Cliente.leggiUtentiDaFile();
+		List <Utente> utenti = Utente.leggiUtentiDaFile();
 		int scelta = sc.nextInt();
 
 		switch (scelta) {
 			case 1 -> registrazione();
 			case 2 -> {
 				try {
-					clienteLoggato = logInCliente(clienti);
+					utenteLoggato = logIn(utenti);
 				}catch(LoginFailedException e){
 					System.err.println(e.getMessage());
 				}
