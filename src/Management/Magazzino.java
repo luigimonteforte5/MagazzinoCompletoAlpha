@@ -1,12 +1,9 @@
 package Management;
-
 import Exceptions.ProdottoNonTrovatoException;
 import Products.ProdottoElettronico;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 public class Magazzino {
 
     //Accetta tipi Products.ProdottoElettronico

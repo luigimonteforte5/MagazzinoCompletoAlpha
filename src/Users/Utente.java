@@ -1,6 +1,14 @@
 package Users;
 
-public abstract class Utente {
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
+
+public class Utente {
     protected String nome;
     protected String cognome;
     protected int age;
@@ -68,8 +76,20 @@ public abstract class Utente {
         this.password = password;
     }
 
-    public Roles getRole (){
-        return role;
+
+    public boolean login(String email, String password) {
+        return email.equals(getEmail()) && password.equals(getPassword());
+    }
+
+    public static List< Utente > leggiUtentiDaFile ( ) {
+        try ( FileReader lettore = new FileReader("src/Users/Users.json") ) {
+            Gson gson = new Gson();
+            Type tipoListaUtenti = new TypeToken< List < Utente > >() {}.getType();
+            return gson.fromJson(lettore, tipoListaUtenti);
+        } catch ( IOException e ) {
+            System.err.println(e.getMessage());
+        }
+        return null;
     }
 
 

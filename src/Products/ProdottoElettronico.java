@@ -55,7 +55,7 @@ public class ProdottoElettronico extends Prodotto {
 
         public ProductBuilder( String marca, String modello, double prezzoAcquisto, double prezzoVendita, int id, String tipoElettronico, float dimSchermo  ) {
             super(marca, modello, prezzoAcquisto, prezzoVendita, id);
-            this.tipoElettronico = TipoElettronico.valueOf(tipoElettronico);
+            this.tipoElettronico = TipoElettronico.valueOf(tipoElettronico.toUpperCase());
             this.dimSchermo = dimSchermo;
         }
 

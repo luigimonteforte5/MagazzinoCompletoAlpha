@@ -2,12 +2,21 @@ package Users;
 import Exceptions.ProdottoNonTrovatoException;
 import Management.Magazzino;
 import Products.ProdottoElettronico;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class Magazziniere extends Utente {
 
     private Magazzino magazzino;
+    private final Roles role;
 
     public Magazzino getMagazzino() {
         return magazzino;
@@ -15,6 +24,7 @@ public class Magazziniere extends Utente {
 
     public Magazziniere(String nome, String cognome, int age, String email, String password) {
         super(nome,cognome, age,email, password);
+        role = Roles.MAGAZZINIERE;
         magazzino = new Magazzino();
 
     }
@@ -52,6 +62,25 @@ public class Magazziniere extends Utente {
     public ProdottoElettronico filteredById(int iD) throws ProdottoNonTrovatoException{
         return magazzino.filteredById(iD);
     }
+
+    public static void aggiungiMagazziniereAlFile(Magazziniere magazziniere) throws IOException {
+        List < Utente> utenti = leggiUtentiDaFile();
+
+        if (utenti == null) {
+            utenti = new ArrayList<>();
+        }
+
+        utenti.add(magazziniere);
+
+        // Scrivi la lista aggiornata nel file
+         FileWriter writer = new FileWriter("src/Users/Users.json"); {
+            Gson gson = new Gson();
+            gson.toJson(utenti, writer);
+            System.out.println("Nuovo magazziniere aggiunto con successo!");
+
+        }
+    }
+
 }
 
 

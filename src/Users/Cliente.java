@@ -25,11 +25,6 @@ public class Cliente extends Utente {
         carrelloCliente = new Carrello();
     }
 
-    public boolean login(String emailCliente, String passwordCliente) {
-
-	    return emailCliente.equals(getEmail()) && passwordCliente.equals(getPassword());
-    }
-
     public void aggiungiProdottoAlCarrello( ProdottoElettronicoUtente prodotto, int quantita) throws ProdottoNonTrovatoException {
         carrelloCliente.aggiungiProdotto(prodotto,quantita);
     }
@@ -82,8 +77,8 @@ public class Cliente extends Utente {
         return carrelloCliente.getCarrello();
     }
 
-    public static List < Cliente > leggiUtentiDaFile ( ) {
-        try ( FileReader lettore = new FileReader("src/Users/Customers.json") ) {
+    public static List < Utente > leggiUtentiDaFile ( ) {
+        try ( FileReader lettore = new FileReader("src/Users/Users.json") ) {
             Gson gson = new Gson();
             Type tipoListaClienti = new TypeToken < List < Cliente > >() {}.getType();
             return gson.fromJson(lettore, tipoListaClienti);
@@ -92,9 +87,13 @@ public class Cliente extends Utente {
         }
         return null;
     }
+    public Roles getRole (){
+        return role;
+    }
 
-    public static void aggiungiUtenteAFile(Cliente cliente){
-        List < Cliente > utenti = leggiUtentiDaFile();
+
+    public static void aggiungiClienteAlFile(Cliente cliente) throws IOException {
+        List < Utente> utenti = leggiUtentiDaFile();
 
         if (utenti == null) {
             utenti = new ArrayList <>();
@@ -103,12 +102,10 @@ public class Cliente extends Utente {
         utenti.add(cliente);
 
         // Scrivi la lista aggiornata nel file
-        try ( FileWriter writer = new FileWriter("src/Users/Customers.json")) {
+         FileWriter writer = new FileWriter("src/Users/Users.json"); {
             Gson gson = new Gson();
             gson.toJson(utenti, writer);
             System.out.println("Nuovo utente aggiunto con successo!");
-        } catch (IOException e) {
-            e.getMessage();
         }
     }
 
