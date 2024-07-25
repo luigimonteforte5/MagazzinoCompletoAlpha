@@ -48,7 +48,7 @@ public class ProdottoElettronico extends Prodotto {
         return new ProdottoElettronicoUtente(marca, modello, descrizione, prezzoVendita, id, tipoElettronico, dimSchermo);
     }
 
-    public static class ProductBuilder extends AbstractBuilder{
+    public static class ProductBuilder extends AbstractBuilder<ProductBuilder>{
 
         private TipoElettronico tipoElettronico;
         private float dimSchermo;
@@ -75,6 +75,11 @@ public class ProdottoElettronico extends Prodotto {
 
         public float getDimSchermo() {
             return dimSchermo;
+        }
+
+        @Override
+        protected ProductBuilder self() {
+            return this;
         }
 
         @Override

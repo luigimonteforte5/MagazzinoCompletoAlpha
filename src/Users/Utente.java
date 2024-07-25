@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 
+
 public class Utente {
     protected String nome;
     protected String cognome;
@@ -17,6 +18,7 @@ public class Utente {
     protected String password;
     protected Roles role;
 
+    public  Utente(){}
 
     public Utente(String nome, String cognome, int age, String email, String password) {
         this.nome = nome;
@@ -92,5 +94,7 @@ public class Utente {
         return null;
     }
 
-
+    public Roles getRole() {
+        return role;
+    }
 }

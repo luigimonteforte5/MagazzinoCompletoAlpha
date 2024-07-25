@@ -8,7 +8,7 @@
     "email":"petrosmusi@acegamer.com",
     "idUtente":0,
     "password":"petro27",
-    "role":"Roles.CLIENTE"
+    "role":"CLIENTE"
   },
   {
     "carrelloCliente": {

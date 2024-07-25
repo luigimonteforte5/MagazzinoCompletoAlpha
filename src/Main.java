@@ -8,7 +8,6 @@ import Users.Cliente;
 import Users.Magazziniere;
 import Users.Roles;
 import Users.Utente;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -34,7 +33,8 @@ public class Main {
 
 
 		//Crea un prodottoElettronico di esempio
-		ProdottoElettronico prd1 = new ProdottoElettronico.ProductBuilder("Samsung", "Galaxy S24", 850.0, 1300.0, 0, "Smartphone", 6).build();
+
+		ProdottoElettronico prd1 = new ProdottoElettronico.ProductBuilder("Samsung", "Galaxy S24", 850.0, 1300.0, 0, "Smartphone", 6).setQuantitaMagazzino(3).build();
 		Magazzino magazzino1 = new Magazzino();//Inizializza il magazzino
 
 		magazzino1.addProductToMagazzino(prd1);//aggiunge il prodotto al magazzino
@@ -44,10 +44,12 @@ public class Main {
 		Cliente clienteLoggato = null;
 		while ( true ) {
 			//Controlla che ci sia un cliente loggato
-			while ( utenteLoggato == null ) {
+			while ( utenteLoggato == null) {
 				menuAccesso();
-				if(tipoUtente.equals(Roles.CLIENTE)){
-					clienteLoggato = (Cliente)(utenteLoggato);
+				tipoUtente = utenteLoggato.getRole();
+				if(tipoUtente.toString().equalsIgnoreCase(utenteLoggato.getRole().toString())){
+					clienteLoggato = Mapper.toUtente(utenteLoggato);
+					//Classe utility per convertire utente in cliente o in magazziniere
 				}
 			}
 
@@ -334,7 +336,7 @@ public class Main {
         try {
             Cliente.aggiungiClienteAlFile(tmp);
         } catch (IOException e) {
-			System.err.println("Impossibile accedere al file");;
+			System.err.println("Impossibile accedere al file");
         }
     }
 

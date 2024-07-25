@@ -11,7 +11,7 @@ public abstract class Prodotto {
 	protected int quantitaMagazzino;
 	protected int numVendite;
 
-	public Prodotto(AbstractBuilder abstractBuilder ) {
+	public Prodotto(AbstractBuilder<?> abstractBuilder ) {
 		this.marca = abstractBuilder.getMarca();
 		this.modello = abstractBuilder.getModello();
 		this.descrizione = abstractBuilder.getDescrizione();
@@ -73,7 +73,7 @@ public abstract class Prodotto {
 	public abstract double calcolaSpesaMedia();
 
 
-	public static abstract class AbstractBuilder {
+	public static abstract class AbstractBuilder<T extends AbstractBuilder<T>>{
 		private String marca;
 		private String modello;
 		private String descrizione;
@@ -90,37 +90,38 @@ public abstract class Prodotto {
 			this.prezzoVendita = prezzoVendita;
 			this.id = id;
 		}
+		protected abstract T self();
 
-		public AbstractBuilder setModello ( String modello ){
+		public T setModello ( String modello ){
 			this.modello = modello;
-			return this;
+			return self();
 		}
 
-		public AbstractBuilder setDescrizione ( String descrizione ){
+		public T setDescrizione ( String descrizione ){
 			this.descrizione = descrizione;
-			return this;
+			return self();
 		}
-		public AbstractBuilder setPrezzoAcquisto ( double prezzoAcquisto ){
+		public T setPrezzoAcquisto ( double prezzoAcquisto ){
 			this.prezzoAcquisto = prezzoAcquisto;
-			return this;
+			return self();
 		}
-		public AbstractBuilder setPrezzoVendita ( double prezzoVendita ){
+		public T setPrezzoVendita ( double prezzoVendita ){
 			this.prezzoVendita = prezzoVendita;
-			return this;
+			return self();
 		}
-		public AbstractBuilder setId ( int id ){
+		public T setId ( int id ){
 			this.id = id;
-			return this;
+			return self();
 		}
 
-		public AbstractBuilder setQuantitaMagazzino ( int quantitaMagazzino ){
+		public T setQuantitaMagazzino ( int quantitaMagazzino ){
 			this.quantitaMagazzino = quantitaMagazzino;
-			return this;
+			return self();
 		}
 
-		public AbstractBuilder setNumVendite ( int numVendite ){
+		public T setNumVendite ( int numVendite ){
 			this.numVendite = numVendite;
-			return this;
+			return self();
 		}
 
 		public String getMarca ( ) {
