@@ -58,6 +58,11 @@ public abstract class Prodotto {
 		this.quantitaMagazzino = quantitaMagazzino;
 	}
 
+	public Prodotto setDescrizione( String descrizione ) {
+		this.descrizione = descrizione;
+		return this;
+	}
+
 	public void incrementaQuantita() {
 		this.quantitaMagazzino++;
 	}

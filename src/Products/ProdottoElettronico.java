@@ -4,7 +4,7 @@ public class ProdottoElettronico extends Prodotto {
     private TipoElettronico tipoElettronico;
     private float dimSchermo;
 
-   public ProdottoElettronico( ProductBuilder productBuilder ){
+   private ProdottoElettronico( ProductBuilder productBuilder ){
 	   super(productBuilder);
        this.tipoElettronico = productBuilder.getTipoElettronico();
        this.dimSchermo = productBuilder.getDimSchermo();
@@ -44,9 +44,6 @@ public class ProdottoElettronico extends Prodotto {
 
     }
 
-    public ProdottoElettronicoUtente toProdottoUtente(){
-        return new ProdottoElettronicoUtente(marca, modello, descrizione, prezzoVendita, id, tipoElettronico, dimSchermo);
-    }
 
     public static class ProductBuilder extends AbstractBuilder<ProductBuilder>{
 

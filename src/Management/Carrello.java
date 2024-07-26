@@ -29,7 +29,6 @@ public class Carrello {
 		ProdottoElettronicoUtente prdToRemove = ricercaPerId(id);
 		decrementaQuantita(id,quantita);
 		if(ricercaPerId(id).getQuantitaCarrello() <= 0) carrello.remove(prdToRemove);
-
 	}
 
 	public ProdottoElettronicoUtente ricercaPerId ( int id) throws ProdottoNonTrovatoException{
@@ -69,7 +68,7 @@ public class Carrello {
 
 	public Set< ProdottoElettronicoUtente > ricercaPerRange ( double prezzoMin, double prezzoMax) throws ProdottoNonTrovatoException{
 		Set< ProdottoElettronicoUtente > tmp = carrello.stream()
-				.filter(p -> p.getPrezzoVendita() > prezzoMin && p.getPrezzoVendita() < prezzoMax )
+				.filter(p -> p.getPrezzoVendita() >= prezzoMin && p.getPrezzoVendita() <= prezzoMax )
 				.collect(Collectors.toSet());
 		if(tmp.isEmpty()){
 			throw new ProdottoNonTrovatoException("Nessuna corrispondenza trovata per range di prezzo");
@@ -144,4 +143,5 @@ public class Carrello {
 
 		prodotto.setQuantitaCarrello(quantita);
 	}
+
 }

@@ -6,17 +6,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 public class Magazzino {
 
-    //Accetta tipi Products.ProdottoElettronico
-    private Set<ProdottoElettronico> magazzino;
+    private static Magazzino instance;
+    private Set<ProdottoElettronico> magazzino = new HashSet<>();
 
-    public Magazzino() {
-        magazzino = new HashSet<>();
+    public static synchronized Magazzino getInstance(){
+        if(instance == null) instance = new Magazzino();
+        return instance;
     }
+
+    private Magazzino() {}
+
+
     //Ritorna il totale degli articoli presenti in magazzino.
     public int totaleProdotti(){
         return magazzino.size();
     }
-
 
     //Lista filtrata per tipo
     public Set<ProdottoElettronico> filtredBytype(String type){
@@ -34,20 +38,20 @@ public class Magazzino {
                .filter(d->d.getMarca().equalsIgnoreCase(type))
                .collect(Collectors.toSet());
     }
-    public Set<ProdottoElettronico> filtredBySellPrice(float price){
+    public Set<ProdottoElettronico> filtredBySellPrice(double price){
         return magazzino.stream()
                 .filter(d->d.getPrezzoVendita() == price)
                 .collect(Collectors.toSet());
     }
     // Filtrato per prezzo magazzino
-    public Set<ProdottoElettronico> filtredByWhareHousePurchasePrice(float price){
+    public Set<ProdottoElettronico> filtredByWhareHousePurchasePrice(double price){
         return magazzino.stream()
                 .filter(d-> d.getPrezzoAcquisto() == price)
                 .collect(Collectors.toSet());
     }
-    public Set< ProdottoElettronico > filtredByRangePrice( float price, float secondPrice){
+    public Set< ProdottoElettronico > filtredByRangePrice( double price, double secondPrice){
         return magazzino.stream()
-                .filter(d->d.getPrezzoVendita() > price && d.getPrezzoVendita() < secondPrice)
+                .filter(d->d.getPrezzoVendita() >= price && d.getPrezzoVendita() <= secondPrice)
                 .collect(Collectors.toSet());
     }
     public void addProductToMagazzino(ProdottoElettronico dispositivo){
@@ -67,7 +71,10 @@ public class Magazzino {
     }
 
     public ProdottoElettronico filteredById(int id) throws ProdottoNonTrovatoException {
-         return magazzino.stream().filter(d-> d.getId() == id).findFirst().orElseThrow(() -> new ProdottoNonTrovatoException("Nessuna corrispondenza nel magazzino"));
+         return magazzino.stream()
+                 .filter(d-> d.getId() == id)
+                 .findFirst()
+                 .orElseThrow(() -> new ProdottoNonTrovatoException("Nessuna corrispondenza nel magazzino"));
     }
 
     public Set<ProdottoElettronico> getMagazzino() {
@@ -102,4 +109,10 @@ public class Magazzino {
         prodotto.setQuantitaMagazzino(nuovaQuantita);
     }
 
+    @Override
+    public String toString() {
+        return "Magazzino{" +
+                "magazzino=" + magazzino +
+                '}';
+    }
 }

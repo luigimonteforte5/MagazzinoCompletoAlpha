@@ -19,7 +19,8 @@
     "age":34,
     "email":"cavolino@acegamer.com",
     "idUtente":1,
-    "password":"cavolo"
+    "password":"cavolo",
+    "role":"CLIENTE"
   },
   {"carrelloCliente":{
     "carrello":[]
@@ -29,6 +30,7 @@
     "age":30,
     "email":"prova@gmail.com",
     "idUtente":0,
-    "password":"prova"
+    "password":"prova",
+    "role":"MAGAZZINIERE"
   }
 ]
